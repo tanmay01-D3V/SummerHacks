@@ -1,0 +1,43 @@
+/* Minimal heatmap styles (fallbacks) for ScreenTimeHeatmap component */
+:root {
+  --heat-day-size: 38px;
+  --heat-gap: 8px;
+}
+
+.heat-js {
+  display: block;
+  width: 100%;
+}
+
+.heat-js .map {
+  display: block;
+}
+
+.heat-js .days {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--heat-day-size), 1fr));
+  gap: var(--heat-gap);
+  align-items: center;
+}
+
+.heat-js .day {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: #fff;
+  background: rgba(45, 55, 72, 0.08);
+  box-sizing: border-box;
+}
+
+/* Color buckets (fallbacks) */
+.day-color-1 { background: rgba(80,200,120,0.25); color: #fff; }
+.day-color-2 { background: rgba(80,200,120,0.5); color: #fff; }
+.day-color-3 { background: rgba(80,200,120,0.75); color: #000; }
+.day-color-4 { background: rgba(80,200,120,1); color: #000; }
+
+.heat-legend { display:flex; gap:8px; margin-top:8px; align-items:center; }
+.heat-legend .key { display:inline-flex; width:18px; height:18px; border-radius:4px; }

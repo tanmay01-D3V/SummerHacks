@@ -1,7 +1,32 @@
 import AuraLayout from '../../components/AuraLayout'
+import { ChartContainer, ChartTooltip } from '../../components/ui/line-charts-6'
+import { Line, LineChart, XAxis, YAxis } from 'recharts'
 import './PredictiveTrends.css'
+import ScreenTimeHeatmap from '../../components/ScreenTimeHeatmap'
 
 const heat = [0.1, 0.2, 0.4, 0.6, 0.8, 1, 0.9, 0.05, 0.1, 0.2, 0.3, 0.5, 0.4, 0.2, 0.1, 0.05, 0.1, 0.15, 0.1, 0.05, 0.05, 0.4, 0.6, 0.8, 0.9, 1, 0.95, 0.8]
+
+// 7-Day Outlook data
+const outlookData = [
+  { day: 'Mon', stress: 45, mood: 75 },
+  { day: 'Tue', stress: 52, mood: 68 },
+  { day: 'Wed', stress: 38, mood: 82 },
+  { day: 'Thu', stress: 61, mood: 55 },
+  { day: 'Fri', stress: 49, mood: 71 },
+  { day: 'Sat', stress: 33, mood: 88 },
+  { day: 'Sun', stress: 41, mood: 79 },
+]
+
+const chartConfig = {
+  stress: {
+    label: 'Stress Level',
+    color: 'var(--color-teal-500)',
+  },
+  mood: {
+    label: 'Mood Score',
+    color: 'var(--color-lime-500)',
+  },
+}
 
 const PredictiveTrends = ({ onNavigate }) => (
   <AuraLayout active="trends" title="Predictive Trends" onNavigate={onNavigate}>
@@ -13,25 +38,28 @@ const PredictiveTrends = ({ onNavigate }) => (
     <section className="trends-grid">
       <article className="soft-card" style={{ padding: 26 }}>
         <h3 style={{ marginTop: 0, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>7-Day Outlook</h3>
-        <svg viewBox="0 0 800 200" style={{ width: '100%', height: 250 }}>
-          <path d="M 0 150 Q 100 120 200 160 T 400 100 T 500 140" fill="none" stroke="#526a58" strokeWidth="4" />
-          <path d="M 500 140 Q 600 160 700 80 T 800 110" fill="none" stroke="#b9bc94" strokeWidth="3" strokeDasharray="9 8" />
-        </svg>
+        <ChartContainer config={chartConfig} className="h-64 w-full">
+          <LineChart data={outlookData} margin={{ top: 20, right: 20, left: 5, bottom: 20 }}>
+            <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
+            <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
+            <ChartTooltip />
+            <Line type="monotone" dataKey="stress" stroke="var(--color-teal-500)" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="mood" stroke="var(--color-lime-500)" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ChartContainer>
       </article>
       <article className="soft-card" style={{ padding: 24 }}>
         <h3 style={{ marginTop: 0, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Correlation Map</h3>
         <p style={{ color: 'var(--on-surface-variant)', marginTop: 0 }}>Screen Time vs. Next-Day Mood</p>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 6 }}>
-          {heat.map((v, i) => (
-            <div key={i} style={{ aspectRatio: '1 / 1', borderRadius: 4, background: `rgba(82, 106, 88, ${v})` }} />
-          ))}
+        <div>
+          <ScreenTimeHeatmap data={heat.map((v) => Math.round(v * 6))} />
         </div>
       </article>
     </section>
 
     <section className="soft-card" style={{ padding: 24, marginTop: 24 }}>
       <h3 style={{ marginTop: 0, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>Stress Culprits</h3>
-      <div className="trigger-list">
+        <div className="trigger-list">
         {[
           ['calendar_month', 'Back-to-back meetings', 'Causes 24% spike in HRV between 2 PM and 4 PM.'],
           ['smartphone', 'Late-night screen time', 'Blue light exposure after 11 PM delays deep sleep by 45 mins.'],
