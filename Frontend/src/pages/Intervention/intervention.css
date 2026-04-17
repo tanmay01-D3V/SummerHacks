@@ -1,0 +1,22 @@
+.intervention-grid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 24px;
+}
+
+.override-orb {
+  width: min(78vw, 340px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  background: var(--surface-low);
+  box-shadow: 14px 14px 26px rgba(55, 58, 28, 0.08), -14px -14px 26px rgba(255, 255, 255, 0.95);
+  margin-inline: auto;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 980px) {
+  .intervention-grid {
+    grid-template-columns: 1fr;
+  }
+}

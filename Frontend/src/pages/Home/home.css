@@ -1,0 +1,45 @@
+.pulse-grid {
+  display: grid;
+  gap: 24px;
+}
+
+.insight-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  padding: 28px;
+}
+
+.orb-wrap {
+  margin: 22px auto 0;
+  width: min(78vw, 430px);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  border: 2px dashed color-mix(in srgb, var(--primary-container) 60%, transparent);
+  display: grid;
+  place-items: center;
+}
+
+.orb-core {
+  width: 62%;
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, var(--primary-container), var(--primary));
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow: 14px 14px 28px rgba(55, 58, 28, 0.08);
+}
+
+.rituals {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+@media (max-width: 900px) {
+  .rituals {
+    grid-template-columns: 1fr;
+  }
+}

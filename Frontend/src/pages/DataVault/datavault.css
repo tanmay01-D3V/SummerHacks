@@ -1,0 +1,18 @@
+.vault-top {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 24px;
+}
+
+.sources-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 980px) {
+  .vault-top,
+  .sources-grid {
+    grid-template-columns: 1fr;
+  }
+}
