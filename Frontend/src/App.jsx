@@ -4,6 +4,7 @@ import PredictiveTrends from './pages/PredictionTrends/PredictiveTrends'
 import Intervention from './pages/Intervention/Intervention'
 import DataVault from './pages/DataVault/DataVault'
 import AssistantPage from './pages/Assistant/AssistantPage'
+import VoiceAssistant from './components/VoiceAssistant'
 import './index.css'
 
 const TABS = ['pulse', 'trends', 'intervention', 'vault', 'assistant']
@@ -22,6 +23,7 @@ const App = () => {
   return (
     <div className="aura-app" data-tab={activeTab}>
       {page}
+      <VoiceAssistant activeTab={activeTab} />
       <button type="button" className="aura-voice-fab" onClick={() => setActiveTab('assistant')} aria-label="Open Aura assistant page">
         <span className="material-symbols-outlined">graphic_eq</span>
       </button>

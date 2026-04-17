@@ -4,6 +4,8 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { ArrowUp, Paperclip, Square, X, StopCircle, Mic, Globe, BrainCog, FolderCode } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+const Motion = motion
+
 const cn = (...classes) => classes.filter(Boolean).join(' ')
 
 const styles = `
@@ -123,7 +125,7 @@ const VoiceRecorder = ({ isRecording, onStartRecording, onStopRecording, visuali
         timerRef.current = null
       }
       if (time > 0) onStopRecording(time)
-      setTime(0)
+      queueMicrotask(() => setTime(0))
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current)
@@ -131,6 +133,9 @@ const VoiceRecorder = ({ isRecording, onStartRecording, onStopRecording, visuali
   }, [isRecording, onStartRecording, onStopRecording, time])
 
   const formatTime = (seconds) => `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`
+  const barHeights = React.useState(
+    () => Array.from({ length: visualizerBars }, () => Math.max(15, Math.random() * 100)),
+  )[0]
 
   return (
     <div className={cn('flex flex-col items-center justify-center w-full transition-all duration-300 py-3', isRecording ? 'opacity-100' : 'opacity-0 h-0')}>
@@ -139,8 +144,8 @@ const VoiceRecorder = ({ isRecording, onStartRecording, onStopRecording, visuali
         <span className="font-mono text-sm text-white/80">{formatTime(time)}</span>
       </div>
       <div className="w-full h-10 flex items-center justify-center gap-0.5 px-4">
-        {[...Array(visualizerBars)].map((_, i) => (
-          <div key={i} className="w-0.5 rounded-full bg-white/50 animate-pulse" style={{ height: `${Math.max(15, Math.random() * 100)}%`, animationDelay: `${i * 0.05}s` }} />
+        {barHeights.map((height, i) => (
+          <div key={i} className="w-0.5 rounded-full bg-white/50 animate-pulse" style={{ height: `${height}%`, animationDelay: `${i * 0.05}s` }} />
         ))}
       </div>
     </div>
@@ -153,9 +158,9 @@ const ImageViewDialog = ({ imageUrl, onClose }) => {
     <Dialog open={!!imageUrl} onOpenChange={onClose}>
       <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-[90vw] md:max-w-[800px]">
         <DialogTitle className="sr-only">Image Preview</DialogTitle>
-        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative bg-[#1F2023] rounded-2xl overflow-hidden shadow-2xl">
+        <Motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="relative bg-[#1F2023] rounded-2xl overflow-hidden shadow-2xl">
           <img src={imageUrl} alt="Full preview" className="w-full max-h-[80vh] object-contain rounded-2xl" />
-        </motion.div>
+        </Motion.div>
       </DialogContent>
     </Dialog>
   )
@@ -321,19 +326,22 @@ export const PromptInputBox = React.forwardRef(({ onSend = () => {}, isLoading =
                 ['search', showSearch, 'Search', '#1EAEDB', Globe, () => handleToggleChange('search')],
                 ['think', showThink, 'Think', '#8B5CF6', BrainCog, () => handleToggleChange('think')],
                 ['canvas', showCanvas, 'Canvas', '#F97316', FolderCode, handleCanvasToggle],
-              ].map(([key, active, label, color, Icon, onClick], idx) => (
+              ].map(([key, active, label, color, Icon, onClick], idx) => {
+                const IconComponent = Icon
+                return (
                 <React.Fragment key={key}>
                   {idx > 0 && <CustomDivider />}
                   <button type="button" onClick={onClick} className={cn('rounded-full transition-all flex items-center gap-1 px-2 py-1 border h-8', active ? `text-[${color}]` : 'bg-transparent border-transparent text-[#9CA3AF] hover:text-[#D1D5DB]')}>
                     <div className="w-5 h-5 flex items-center justify-center flex-shrink-0">
-                      <motion.div animate={{ rotate: active ? 360 : 0 }}>
-                        <Icon className="w-4 h-4" style={{ color: active ? color : 'currentColor' }} />
-                      </motion.div>
+                      <Motion.div animate={{ rotate: active ? 360 : 0 }}>
+                        <IconComponent className="w-4 h-4" style={{ color: active ? color : 'currentColor' }} />
+                      </Motion.div>
                     </div>
-                    <AnimatePresence>{active && <motion.span initial={{ width: 0, opacity: 0 }} animate={{ width: 'auto', opacity: 1 }} exit={{ width: 0, opacity: 0 }} className="text-xs overflow-hidden whitespace-nowrap flex-shrink-0">{label}</motion.span>}</AnimatePresence>
+                    <AnimatePresence>{active && <Motion.span initial={{ width: 0, opacity: 0 }} animate={{ width: 'auto', opacity: 1 }} exit={{ width: 0, opacity: 0 }} className="text-xs overflow-hidden whitespace-nowrap flex-shrink-0">{label}</Motion.span>}</AnimatePresence>
                   </button>
                 </React.Fragment>
-              ))}
+                )
+              })}
             </div>
           </div>
 

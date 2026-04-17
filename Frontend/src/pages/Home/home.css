@@ -1,9 +1,9 @@
-.pulse-grid {
+.home-dashboard-shell {
   display: grid;
   gap: 24px;
 }
 
-.insight-card {
+.home-hero-card {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
@@ -11,7 +11,70 @@
   padding: 28px;
 }
 
-.orb-wrap {
+.home-hero-icon {
+  font-size: 36px;
+  color: var(--tertiary);
+}
+
+.home-hero-copy {
+  flex: 1;
+  min-width: 260px;
+}
+
+.home-hero-copy h2 {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.home-hero-copy p {
+  margin: 8px 0 0;
+  color: var(--on-surface-variant);
+}
+
+.home-kicker {
+  margin: 0;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.home-summary-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 24px;
+}
+
+.home-pulse-card {
+  padding: 30px;
+}
+
+.home-stack {
+  display: grid;
+  gap: 24px;
+}
+
+.home-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 20px;
+}
+
+.home-section-head h2,
+.home-section-head h3 {
+  margin: 8px 0 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.home-quote {
+  margin: 0;
+  font-style: italic;
+  color: var(--on-surface-variant);
+}
+
+.home-pulse-orb {
   margin: 22px auto 0;
   width: min(78vw, 430px);
   aspect-ratio: 1 / 1;
@@ -23,7 +86,7 @@
   animation: auraFloat 6s ease-in-out infinite;
 }
 
-.orb-core {
+.home-pulse-core {
   width: 62%;
   aspect-ratio: 1 / 1;
   border-radius: 999px;
@@ -35,23 +98,36 @@
   animation: orbBreathe 3.2s ease-in-out infinite;
 }
 
-.orb-ring {
+.home-pulse-number {
+  text-align: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: clamp(2.2rem, 5vw, 4.4rem);
+  font-weight: 800;
+}
+
+.home-pulse-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.home-pulse-ring {
   position: absolute;
   border-radius: 999px;
   border: 1px dashed color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
-.orb-ring-outer {
+.home-pulse-ring-outer {
   inset: 7%;
   animation: spinSlow 24s linear infinite;
 }
 
-.orb-ring-inner {
+.home-pulse-ring-inner {
   inset: 19%;
   animation: spinSlowReverse 18s linear infinite;
 }
 
-.orb-chip {
+.home-status-chip {
   position: absolute;
   display: flex;
   align-items: center;
@@ -64,26 +140,122 @@
   box-shadow: 8px 8px 14px rgba(55, 58, 28, 0.06);
 }
 
-.orb-chip .material-symbols-outlined {
+.home-status-chip .material-symbols-outlined {
   font-size: 16px;
 }
 
-.orb-chip-heart {
+.home-status-chip-heart {
   top: 14%;
   right: 2%;
   animation: chipPulse 2.8s ease-in-out infinite;
 }
 
-.orb-chip-oxygen {
+.home-status-chip-oxygen {
   left: -2%;
   bottom: 18%;
   animation: chipPulse 2.8s ease-in-out 0.8s infinite;
 }
 
-.rituals {
+.home-status-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+  color: var(--on-surface-variant);
+  font-size: 13px;
+}
+
+.home-sync-pill {
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-weight: 700;
+  text-transform: capitalize;
+  background: color-mix(in srgb, var(--surface-container) 70%, white);
+}
+
+.home-sync-pill.is-live {
+  color: var(--primary);
+}
+
+.home-sync-pill.is-syncing {
+  color: var(--secondary);
+}
+
+.home-sync-pill.is-error {
+  color: #8a2f2f;
+}
+
+.home-sync-pill.is-signed-out {
+  color: var(--on-surface-variant);
+}
+
+.home-error-banner {
+  margin: 16px 0 0;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, #f5b5b5 20%, var(--surface));
+  color: #8a2f2f;
+}
+
+.home-focus-card,
+.home-notes-card,
+.home-quick-actions {
+  padding: 26px;
+}
+
+.home-note-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.home-note-card {
+  border-radius: 18px;
+  padding: 16px;
+  background: color-mix(in srgb, var(--surface-container) 60%, white);
+  display: grid;
+  gap: 6px;
+}
+
+.home-note-label {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.home-note-card strong {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 18px;
+}
+
+.home-note-card span {
+  color: var(--on-surface-variant);
+  font-size: 13px;
+}
+
+.home-focus-card {
+  background: color-mix(in srgb, var(--secondary-container) 40%, var(--surface-low));
+}
+
+.home-focus-hours {
+  font-size: 46px;
+  margin: 8px 0;
+  color: var(--secondary);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+}
+
+.home-focus-note {
+  margin: 0 0 18px;
+  color: var(--on-surface-variant);
+}
+
+.home-quick-copy {
+  margin: 12px 0 0;
+  color: var(--on-surface-variant);
 }
 
 @keyframes orbBreathe {
@@ -137,7 +309,12 @@
 }
 
 @media (max-width: 900px) {
-  .rituals {
+  .home-summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .home-section-head {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }

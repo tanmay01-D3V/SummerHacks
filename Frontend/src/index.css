@@ -143,6 +143,20 @@ body,
   box-shadow: 0 8px 16px rgba(55, 58, 28, 0.12);
 }
 
+.aura-header-pill {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: color-mix(in srgb, var(--primary-container) 42%, white);
+  color: var(--primary);
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 16px rgba(55, 58, 28, 0.08);
+}
+
 .soft-card {
   border-radius: 28px;
   background: var(--surface-low);
@@ -192,6 +206,53 @@ body,
 .aura-form-grid {
   display: grid;
   gap: 8px;
+}
+
+.aura-auth-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.aura-account-card {
+  border-radius: 18px;
+  padding: 16px;
+  background: color-mix(in srgb, var(--primary-container) 36%, white);
+}
+
+.aura-account-card h4,
+.aura-account-card p {
+  margin: 0;
+}
+
+.aura-account-card h4 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 22px;
+  margin-bottom: 4px;
+}
+
+.aura-account-label {
+  text-transform: uppercase;
+  letter-spacing: 1.6px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px !important;
+}
+
+.aura-account-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.aura-auth-error {
+  margin: 4px 0 0;
+  color: #8a2f2f;
+  background: color-mix(in srgb, #f5b5b5 20%, var(--surface));
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 13px;
 }
 
 .aura-tab-strip {

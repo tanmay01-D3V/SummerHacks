@@ -17,6 +17,7 @@ Rules:
    - one immediate action (1-5 minutes),
    - one next-hour action,
    - one today-level action.
+7) Respond in the same language as the user's message. If the message is in a different language, provide your response in that language.
 `.trim()
 
 export const buildWellnessContext = (activeTab) => ({
@@ -30,12 +31,15 @@ export const buildWellnessContext = (activeTab) => ({
   habits: ['10-minute walk at 3 PM', 'blue-light filter at 8 PM', 'hourly hydration checks'],
 })
 
-export const getAssistantReply = async ({ message, context }) => {
+export const getAssistantReply = async ({ message, context, language = 'en-US' }) => {
   const apiKey = import.meta.env.VITE_AURA_AI_API_KEY
   const provider = (import.meta.env.VITE_AURA_AI_PROVIDER || 'gemini').toLowerCase()
   const apiUrl = import.meta.env.VITE_AURA_AI_API_URL
   const model = import.meta.env.VITE_AURA_AI_MODEL || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini')
-  const userPrompt = `User wellness context:\n${JSON.stringify(context, null, 2)}\n\nUser says:\n${message}`
+
+  // Add language context to the user prompt
+  const languageContext = language !== 'en-US' ? `Please respond in the same language as the user. The user is speaking in: ${language}. ` : ''
+  const userPrompt = `${languageContext}User wellness context:\n${JSON.stringify(context, null, 2)}\n\nUser says:\n${message}`
 
   if (!apiKey) {
     throw new Error('Missing VITE_AURA_AI_API_KEY. Add it to your .env.local file.')
