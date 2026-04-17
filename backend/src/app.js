@@ -2,6 +2,7 @@ const cors = require('cors')
 const express = require('express')
 const { clientOrigin } = require('./config')
 const authRoutes = require('./routes/auth')
+const analyticsRoutes = require('./routes/analytics')
 const homeRoutes = require('./routes/home')
 const recordRoutes = require('./routes/records')
 
@@ -20,6 +21,7 @@ app.get('/health', (_, res) => {
 })
 
 app.use('/api/auth', authRoutes)
+app.use('/api/analytics', analyticsRoutes)
 app.use('/api/home', homeRoutes)
 app.use('/api/records', recordRoutes)
 

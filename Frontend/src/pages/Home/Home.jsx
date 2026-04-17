@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import AuraLayout from '../../components/AuraLayout'
+import { Input } from '../../components/ui/input'
+import { Slider } from '../../components/ui/slider'
 import { createRecord, fetchHomeSummary, getStoredAuthSession } from '../../lib/auraApi'
 import './home.css'
 
@@ -24,8 +26,14 @@ const emptySummary = {
   focusHours: 0,
   moodLabel: 'Steady',
   moodNote: 'No mood data yet.',
-  hydrationNote: 'No hydration data yet.',
+  mealCount: 0,
+  mealTarget: 4,
+  mealTargetReached: false,
+  mealNote: '4 meal(s) left today.',
   hydrationCount: 0,
+  hydrationTarget: 8,
+  hydrationTargetReached: false,
+  hydrationNote: '8 litre(s) left today.',
   totalRecords: 0,
   todayRecords: 0,
   lastUpdatedAt: null,
@@ -38,6 +46,8 @@ const Home = ({ onNavigate }) => {
   const [savingType, setSavingType] = useState('')
   const [error, setError] = useState('')
   const [syncState, setSyncState] = useState('idle')
+  const [mealNote, setMealNote] = useState('')
+  const [hydrationNote, setHydrationNote] = useState('')
 
   useEffect(() => {
     const syncSession = () => setSession(getStoredAuthSession())
@@ -118,16 +128,83 @@ const Home = ({ onNavigate }) => {
       return
     }
 
+    let previousSummary = null
     try {
       setSavingType(type)
       setError('')
-      await createRecord(currentSession.token, {
+      const amount = Number(payload?.value?.amount ?? payload?.payload?.amount ?? 1) || 1
+      previousSummary = summary
+      setSummary((prev) => {
+        if (type === 'meal_log') {
+          const nextMealCount = Math.min((prev.mealCount || 0) + amount, prev.mealTarget || 4)
+          return {
+            ...prev,
+            mealCount: nextMealCount,
+            mealTargetReached: nextMealCount >= (prev.mealTarget || 4),
+            mealNote: nextMealCount >= (prev.mealTarget || 4)
+              ? 'Meal target reached for today.'
+              : `${Math.max((prev.mealTarget || 4) - nextMealCount, 0)} meal(s) left today.`,
+          }
+        }
+
+        if (type === 'hydration_log') {
+          const nextHydrationCount = Math.min((prev.hydrationCount || 0) + amount, prev.hydrationTarget || 8)
+          return {
+            ...prev,
+            hydrationCount: nextHydrationCount,
+            hydrationTargetReached: nextHydrationCount >= (prev.hydrationTarget || 8),
+            hydrationNote: nextHydrationCount >= (prev.hydrationTarget || 8)
+              ? 'Hydration target reached for today.'
+              : `${Math.max((prev.hydrationTarget || 8) - nextHydrationCount, 0)} litre(s) left today.`,
+          }
+        }
+
+        return prev
+      })
+
+      const { record } = await createRecord(currentSession.token, {
         type,
         source: 'home-dashboard',
         ...payload,
       })
+
+      if (type === 'meal_log' || type === 'hydration_log') {
+        const savedAmount = Number(record?.value?.amount ?? record?.payload?.amount ?? amount) || amount
+        setSummary((prev) => {
+          if (type === 'meal_log') {
+            const nextMealCount = Math.min((prev.mealCount || 0) + Math.max(savedAmount, 1), prev.mealTarget || 4)
+            return {
+              ...prev,
+              mealCount: nextMealCount,
+              mealTargetReached: nextMealCount >= (prev.mealTarget || 4),
+              mealNote: nextMealCount >= (prev.mealTarget || 4)
+                ? 'Meal target reached for today.'
+                : `${Math.max((prev.mealTarget || 4) - nextMealCount, 0)} meal(s) left today.`,
+            }
+          }
+
+          if (type === 'hydration_log') {
+            const nextHydrationCount = Math.min((prev.hydrationCount || 0) + Math.max(savedAmount, 1), prev.hydrationTarget || 8)
+            return {
+              ...prev,
+              hydrationCount: nextHydrationCount,
+              hydrationTargetReached: nextHydrationCount >= (prev.hydrationTarget || 8),
+              hydrationNote: nextHydrationCount >= (prev.hydrationTarget || 8)
+                ? 'Hydration target reached for today.'
+                : `${Math.max((prev.hydrationTarget || 8) - nextHydrationCount, 0)} litre(s) left today.`,
+            }
+          }
+
+          return prev
+        })
+        return
+      }
+
       await reloadSummary()
     } catch (saveError) {
+      if (previousSummary) {
+        setSummary(previousSummary)
+      }
       setError(saveError.message || 'Failed to save record.')
     } finally {
       setSavingType('')
@@ -197,21 +274,113 @@ const Home = ({ onNavigate }) => {
           <div className="home-stack">
             <article className="soft-card home-notes-card">
               <h3>What you need</h3>
-              <div className="home-note-grid">
-                <div className="home-note-card">
-                  <p className="home-note-label">Mood</p>
-                  <strong>{summary.moodLabel}</strong>
-                  <span>{summary.moodNote}</span>
+              <div className="home-target-stack">
+                <div className="home-target-row">
+                  <div className="home-target-head">
+                    <div>
+                      <p className="home-note-label">Meal target</p>
+                      <strong>
+                        {summary.mealCount} / {summary.mealTarget} meals
+                      </strong>
+                    </div>
+                    <span className={`home-target-badge ${summary.mealTargetReached ? 'is-complete' : ''}`}>
+                      {summary.mealTargetReached ? 'Reached' : 'Pending'}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[summary.mealCount]}
+                    min={0}
+                    max={4}
+                    step={1}
+                    disabled
+                    aria-label="Meal amount"
+                    className="home-target-slider"
+                  />
+                  <div className="home-target-inline">
+                    <Input
+                      className="home-target-input"
+                      type="text"
+                      placeholder="Meal note"
+                      value={mealNote}
+                      onChange={(event) => setMealNote(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="aura-tab-chip is-active home-target-save"
+                      onClick={() => {
+                        handleQuickLog('meal_log', {
+                          title: mealNote.trim() || 'Meal logged',
+                          value: {
+                            note: mealNote.trim() || 'Meal logged from the home dashboard.',
+                            amount: 1,
+                          },
+                          payload: {
+                            note: mealNote.trim() || 'Meal logged from the home dashboard.',
+                            amount: 1,
+                          },
+                          tags: ['home', 'meal'],
+                        })
+                        setMealNote('')
+                      }}
+                      disabled={savingType === 'meal_log' || !session?.token}
+                    >
+                      {savingType === 'meal_log' ? 'Saving...' : 'Save meal'}
+                    </button>
+                  </div>
                 </div>
-                <div className="home-note-card">
-                  <p className="home-note-label">Hydration</p>
-                  <strong>{summary.hydrationCount} logs</strong>
-                  <span>{summary.hydrationNote}</span>
-                </div>
-                <div className="home-note-card">
-                  <p className="home-note-label">Today</p>
-                  <strong>{summary.todayRecords} records</strong>
-                  <span>Auto-refreshed from MongoDB.</span>
+
+                <div className="home-target-row">
+                  <div className="home-target-head">
+                    <div>
+                      <p className="home-note-label">Hydration target</p>
+                      <strong>
+                        {summary.hydrationCount} / {summary.hydrationTarget} litres
+                      </strong>
+                    </div>
+                    <span className={`home-target-badge ${summary.hydrationTargetReached ? 'is-complete' : ''}`}>
+                      {summary.hydrationTargetReached ? 'Reached' : 'Pending'}
+                    </span>
+                  </div>
+                  <Slider
+                    value={[summary.hydrationCount]}
+                    min={0}
+                    max={8}
+                    step={1}
+                    disabled
+                    aria-label="Hydration amount"
+                    className="home-target-slider home-target-slider-hydration"
+                  />
+                  <div className="home-target-inline">
+                    <Input
+                      className="home-target-input"
+                      type="text"
+                      placeholder="Water note"
+                      value={hydrationNote}
+                      onChange={(event) => setHydrationNote(event.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="aura-tab-chip is-active home-target-save"
+                      onClick={() => {
+                        handleQuickLog('hydration_log', {
+                          title: hydrationNote.trim() || 'Hydration logged',
+                          value: {
+                            note: hydrationNote.trim() || 'Water logged from the home dashboard.',
+                            amount: 1,
+                          },
+                          payload: {
+                            note: hydrationNote.trim() || 'Water logged from the home dashboard.',
+                            amount: 1,
+                          },
+                          tags: ['home', 'hydration'],
+                        })
+                        setHydrationNote('')
+                      }}
+                      disabled={savingType === 'hydration_log' || !session?.token}
+                    >
+                      {savingType === 'hydration_log' ? 'Saving...' : 'Save water'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </article>

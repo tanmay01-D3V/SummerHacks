@@ -15,6 +15,11 @@ const buildQuery = (req) => {
   return query
 }
 
+const DAILY_TARGETS = {
+  meal_log: 4,
+  hydration_log: 8,
+}
+
 router.get('/', authRequired, async (req, res) => {
   try {
     const limit = Math.min(Number.parseInt(req.query?.limit || '50', 10) || 50, 100)
@@ -31,16 +36,39 @@ router.post('/', authRequired, async (req, res) => {
     if (!type) {
       return res.status(400).json({ message: 'Record type is required.' })
     }
+    const amount = Number(req.body?.value?.amount ?? req.body?.payload?.amount ?? 1)
+    const safeAmount = Number.isFinite(amount) && amount > 0 ? amount : 1
+    const target = DAILY_TARGETS[type]
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const existingTodayTotal = target
+      ? (
+          await UserRecord.find({
+            user: req.user._id,
+            type,
+            createdAt: { $gte: todayStart },
+          })
+        ).reduce((total, item) => {
+          const currentAmount = Number(item.value?.amount ?? item.payload?.amount ?? 1)
+          return total + (Number.isFinite(currentAmount) && currentAmount > 0 ? currentAmount : 1)
+        }, 0)
+      : 0
 
     const record = await UserRecord.create({
       user: req.user._id,
       type,
       title: String(req.body?.title || '').trim(),
-      value: req.body?.value ?? null,
-      payload: req.body?.payload ?? {},
+      value: {
+        ...(req.body?.value && typeof req.body.value === 'object' ? req.body.value : {}),
+        amount: safeAmount,
+      },
+      payload: {
+        ...(req.body?.payload && typeof req.body.payload === 'object' ? req.body.payload : {}),
+        amount: safeAmount,
+      },
       source: String(req.body?.source || 'manual').trim(),
       tags: Array.isArray(req.body?.tags) ? req.body.tags.filter(Boolean) : [],
-      status: req.body?.status || 'active',
+      status: target && existingTodayTotal + safeAmount >= target ? 'completed' : (req.body?.status || 'active'),
     })
 
     return res.status(201).json({ record: record.toJSON() })

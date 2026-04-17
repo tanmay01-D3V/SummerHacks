@@ -10,6 +10,7 @@ import {
 
 const NAV_ITEMS = [
   { id: 'pulse', label: 'Pulse', icon: 'radio_button_checked' },
+  { id: 'journal', label: 'Journal', icon: 'graphic_eq' },
   { id: 'trends', label: 'Predictive Trends', icon: 'trending_up' },
   { id: 'intervention', label: 'Intervention', icon: 'emergency_home' },
   { id: 'vault', label: 'Data Vault', icon: 'security' },

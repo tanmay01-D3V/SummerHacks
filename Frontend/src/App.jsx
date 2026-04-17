@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import Home from './pages/Home/Home'
+import BioFeedbackJournal from './pages/Journal/BioFeedbackJournal'
 import PredictiveTrends from './pages/PredictionTrends/PredictiveTrends'
 import Intervention from './pages/Intervention/Intervention'
 import DataVault from './pages/DataVault/DataVault'
@@ -7,12 +8,13 @@ import AssistantPage from './pages/Assistant/AssistantPage'
 import VoiceAssistant from './components/VoiceAssistant'
 import './index.css'
 
-const TABS = ['pulse', 'trends', 'intervention', 'vault', 'assistant']
+const TABS = ['pulse', 'journal', 'trends', 'intervention', 'vault', 'assistant']
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('pulse')
 
   const page = useMemo(() => {
+    if (activeTab === 'journal') return <BioFeedbackJournal onNavigate={setActiveTab} />
     if (activeTab === 'trends') return <PredictiveTrends onNavigate={setActiveTab} />
     if (activeTab === 'intervention') return <Intervention onNavigate={setActiveTab} />
     if (activeTab === 'vault') return <DataVault onNavigate={setActiveTab} />

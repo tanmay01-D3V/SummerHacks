@@ -66,6 +66,8 @@ export const fetchRecords = (token, query = {}) => {
 
 export const fetchHomeSummary = (token) => request('/home/summary', { token })
 
+export const fetchCorrelationAnalytics = (token) => request('/analytics/correlation', { token })
+
 export const createRecord = (token, payload) =>
   request('/records', { method: 'POST', token, body: payload })
 
