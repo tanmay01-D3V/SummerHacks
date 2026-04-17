@@ -3,10 +3,10 @@ import Home from './pages/Home/Home'
 import PredictiveTrends from './pages/PredictionTrends/PredictiveTrends'
 import Intervention from './pages/Intervention/Intervention'
 import DataVault from './pages/DataVault/DataVault'
-import VoiceAssistant from './components/VoiceAssistant'
+import AssistantPage from './pages/Assistant/AssistantPage'
 import './index.css'
 
-const TABS = ['pulse', 'trends', 'intervention', 'vault']
+const TABS = ['pulse', 'trends', 'intervention', 'vault', 'assistant']
 
 const App = () => {
   const [activeTab, setActiveTab] = useState('pulse')
@@ -15,13 +15,16 @@ const App = () => {
     if (activeTab === 'trends') return <PredictiveTrends onNavigate={setActiveTab} />
     if (activeTab === 'intervention') return <Intervention onNavigate={setActiveTab} />
     if (activeTab === 'vault') return <DataVault onNavigate={setActiveTab} />
+    if (activeTab === 'assistant') return <AssistantPage onNavigate={setActiveTab} />
     return <Home onNavigate={setActiveTab} />
   }, [activeTab])
 
   return (
     <div className="aura-app" data-tab={activeTab}>
       {page}
-      <VoiceAssistant activeTab={activeTab} />
+      <button type="button" className="aura-voice-fab" onClick={() => setActiveTab('assistant')} aria-label="Open Aura assistant page">
+        <span className="material-symbols-outlined">graphic_eq</span>
+      </button>
       <div className="aura-tab-strip" role="tablist" aria-label="Aura pages">
         {TABS.map((tab) => (
           <button

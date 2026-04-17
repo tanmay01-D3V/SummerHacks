@@ -28,11 +28,21 @@ const Home = ({ onNavigate }) => (
           <p style={{ margin: 0, fontStyle: 'italic', color: 'var(--on-surface-variant)' }}>"Deep breaths, clear minds."</p>
         </div>
         <div className="orb-wrap">
+          <div className="orb-ring orb-ring-outer" />
+          <div className="orb-ring orb-ring-inner" />
           <div className="orb-core">
             <div style={{ textAlign: 'center' }}>
               <div style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 'clamp(2.2rem, 5vw, 4.4rem)', fontWeight: 800 }}>64</div>
               <div style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 2 }}>Stress index</div>
             </div>
+          </div>
+          <div className="orb-chip orb-chip-heart">
+            <span className="material-symbols-outlined">monitor_heart</span>
+            72 bpm
+          </div>
+          <div className="orb-chip orb-chip-oxygen">
+            <span className="material-symbols-outlined">air</span>
+            98% O2
           </div>
         </div>
       </article>

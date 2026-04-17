@@ -19,6 +19,8 @@
   border: 2px dashed color-mix(in srgb, var(--primary-container) 60%, transparent);
   display: grid;
   place-items: center;
+  position: relative;
+  animation: auraFloat 6s ease-in-out infinite;
 }
 
 .orb-core {
@@ -30,12 +32,108 @@
   display: grid;
   place-items: center;
   box-shadow: 14px 14px 28px rgba(55, 58, 28, 0.08);
+  animation: orbBreathe 3.2s ease-in-out infinite;
+}
+
+.orb-ring {
+  position: absolute;
+  border-radius: 999px;
+  border: 1px dashed color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.orb-ring-outer {
+  inset: 7%;
+  animation: spinSlow 24s linear infinite;
+}
+
+.orb-ring-inner {
+  inset: 19%;
+  animation: spinSlowReverse 18s linear infinite;
+}
+
+.orb-chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--surface) 80%, white);
+  box-shadow: 8px 8px 14px rgba(55, 58, 28, 0.06);
+}
+
+.orb-chip .material-symbols-outlined {
+  font-size: 16px;
+}
+
+.orb-chip-heart {
+  top: 14%;
+  right: 2%;
+  animation: chipPulse 2.8s ease-in-out infinite;
+}
+
+.orb-chip-oxygen {
+  left: -2%;
+  bottom: 18%;
+  animation: chipPulse 2.8s ease-in-out 0.8s infinite;
 }
 
 .rituals {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 24px;
+}
+
+@keyframes orbBreathe {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: saturate(1);
+  }
+  50% {
+    transform: scale(1.05);
+    filter: saturate(1.12);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinSlowReverse {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes auraFloat {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes chipPulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
 }
 
 @media (max-width: 900px) {

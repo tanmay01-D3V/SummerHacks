@@ -115,10 +115,74 @@ body,
   align-items: center;
 }
 
+.aura-header-icon {
+  border: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--surface) 85%, white);
+  color: var(--primary);
+  cursor: pointer;
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+
+.aura-header-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(55, 58, 28, 0.12);
+}
+
 .soft-card {
   border-radius: 28px;
   background: var(--surface-low);
   box-shadow: 10px 10px 24px rgba(55, 58, 28, 0.05), -10px -10px 24px rgba(255, 255, 255, 0.8);
+}
+
+.aura-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 15, 3, 0.22);
+  backdrop-filter: blur(3px);
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.aura-modal {
+  width: min(460px, 100%);
+  padding: 18px;
+  animation: modalIn 180ms ease-out;
+}
+
+.aura-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.aura-modal-header h3 {
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.aura-setting-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-container) 60%, white);
+  padding: 11px 12px;
+  margin-bottom: 8px;
+}
+
+.aura-form-grid {
+  display: grid;
+  gap: 8px;
 }
 
 .aura-tab-strip {
@@ -237,6 +301,17 @@ body,
   border-radius: 12px;
   padding: 8px 10px;
   font-size: 13px;
+}
+
+@keyframes modalIn {
+  from {
+    transform: translateY(8px) scale(0.98);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 @media (max-width: 900px) {
