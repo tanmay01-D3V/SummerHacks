@@ -3,6 +3,7 @@ import Home from './pages/Home/Home'
 import PredictiveTrends from './pages/PredictionTrends/PredictiveTrends'
 import Intervention from './pages/Intervention/Intervention'
 import DataVault from './pages/DataVault/DataVault'
+import VoiceAssistant from './components/VoiceAssistant'
 import './index.css'
 
 const TABS = ['pulse', 'trends', 'intervention', 'vault']
@@ -20,6 +21,7 @@ const App = () => {
   return (
     <div className="aura-app" data-tab={activeTab}>
       {page}
+      <VoiceAssistant activeTab={activeTab} />
       <div className="aura-tab-strip" role="tablist" aria-label="Aura pages">
         {TABS.map((tab) => (
           <button

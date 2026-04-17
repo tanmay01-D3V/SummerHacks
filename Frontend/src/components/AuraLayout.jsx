@@ -7,6 +7,7 @@ const NAV_ITEMS = [
 
 const AuraLayout = ({ active, title, onNavigate, children }) => (
   <div className="aura-shell">
+    <div className="aura-sidebar-trigger" aria-hidden="true" />
     <aside className="aura-sidebar">
       <div style={{ marginBottom: 28 }}>
         <div style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 30, fontWeight: 800, color: 'var(--primary)' }}>
