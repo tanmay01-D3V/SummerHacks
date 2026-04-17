@@ -1,5 +1,5 @@
 import AuraLayout from '../../components/AuraLayout'
-import { ChartConfig, ChartContainer, ChartTooltip } from '../../components/ui/line-charts-6'
+import { ChartContainer, ChartTooltip } from '../../components/ui/line-charts-6'
 import { Line, LineChart, XAxis, YAxis } from 'recharts'
 import './PredictiveTrends.css'
 
