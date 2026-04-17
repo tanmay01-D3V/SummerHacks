@@ -1,5 +1,5 @@
 import AuraLayout from '../../components/AuraLayout'
-import './Intervention.css'
+import './intervention.css'
 
 const Intervention = ({ onNavigate }) => (
   <AuraLayout active="intervention" title="Intervention" onNavigate={onNavigate}>
