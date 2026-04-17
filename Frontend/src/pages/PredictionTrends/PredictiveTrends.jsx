@@ -25,7 +25,7 @@ const chartConfig = {
     label: 'Mood Score',
     color: 'var(--color-lime-500)',
   },
-} satisfies ChartConfig
+}
 
 const PredictiveTrends = ({ onNavigate }) => (
   <AuraLayout active="trends" title="Predictive Trends" onNavigate={onNavigate}>
