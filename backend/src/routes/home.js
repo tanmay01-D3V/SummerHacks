@@ -124,6 +124,16 @@ router.get('/summary', authRequired, async (req, res) => {
       .filter((record) => record.type === 'hydration_log' && new Date(record.createdAt) >= todayStart)
       .reduce((total, record) => total + getAmount(record), 0)
 
+    const focusMinutes = todaysRecords
+      .filter((record) => record.type === 'focus_session')
+      .reduce((total, record) => {
+        const mins = record.value?.minutes ?? record.payload?.minutes
+        if (typeof mins === 'number') return total + mins
+        const hrs = record.value?.hours ?? record.payload?.hours 
+        if (typeof hrs === 'number') return total + (hrs * 60)
+        return total
+      }, 0)
+
     const todayRecords = todaysRecords.length
     const stressCulprits = buildStressCulprits({
       todaysRecords,
@@ -138,7 +148,8 @@ router.get('/summary', authRequired, async (req, res) => {
         stressIndex: 64,
         restingHeartRate: 72,
         oxygenLevel: 98,
-        focusHours: 0,
+        focusHours: focusMinutes / 60,
+        focusMinutes: Math.round(focusMinutes),
         moodLabel: 'Steady',
         moodNote: 'No mood data yet.',
         mealCount,

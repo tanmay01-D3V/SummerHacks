@@ -68,6 +68,8 @@ export const fetchHomeSummary = (token) => request('/home/summary', { token })
 
 export const fetchCorrelationAnalytics = (token) => request('/analytics/correlation', { token })
 
+export const fetchProactiveAlert = (token) => request('/predictions/proactive-alert', { token })
+
 export const createRecord = (token, payload) =>
   request('/records', { method: 'POST', token, body: payload })
 

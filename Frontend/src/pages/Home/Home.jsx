@@ -24,6 +24,7 @@ const emptySummary = {
   restingHeartRate: 72,
   oxygenLevel: 98,
   focusHours: 0,
+  focusMinutes: 0,
   moodLabel: 'Steady',
   moodNote: 'No mood data yet.',
   mealCount: 0,
@@ -48,6 +49,81 @@ const Home = ({ onNavigate }) => {
   const [syncState, setSyncState] = useState('idle')
   const [mealNote, setMealNote] = useState('')
   const [hydrationNote, setHydrationNote] = useState('')
+  const savingTypeRef = { current: savingType }
+  useEffect(() => { savingTypeRef.current = savingType }, [savingType])
+
+  // Focus Timer State
+  const [isFocusing, setIsFocusing] = useState(false)
+  const [focusStartTime, setFocusStartTime] = useState(null)
+  const [elapsedSessionTime, setElapsedSessionTime] = useState(0)
+
+  useEffect(() => {
+    const savedStart = localStorage.getItem('aura-focus-start')
+    if (savedStart) {
+      const startTime = new Date(savedStart)
+      setFocusStartTime(startTime)
+      setIsFocusing(true)
+    }
+  }, [])
+
+  useEffect(() => {
+    let interval
+    if (isFocusing && focusStartTime) {
+      const update = () => {
+        const diff = Math.floor((new Date() - focusStartTime) / 1000)
+        setElapsedSessionTime(Math.max(0, diff))
+      }
+      update()
+      interval = setInterval(update, 1000)
+    } else {
+      setElapsedSessionTime(0)
+    }
+    return () => clearInterval(interval)
+  }, [isFocusing, focusStartTime])
+
+  const formatElapsed = (seconds) => {
+    const hrs = Math.floor(seconds / 3600)
+    const mins = Math.floor((seconds % 3600) / 60)
+    const secs = seconds % 60
+    return `${hrs > 0 ? hrs + ':' : ''}${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+  }
+
+  const handleStartFocus = () => {
+    const now = new Date()
+    setFocusStartTime(now)
+    setIsFocusing(true)
+    localStorage.setItem('aura-focus-start', now.toISOString())
+  }
+
+  const handleStopFocus = async () => {
+    if (!focusStartTime) return
+    const now = new Date()
+    const durationMs = now - focusStartTime
+    const durationHours = durationMs / 3600000
+    const durationMinutes = Math.floor(durationMs / 60000)
+    
+    // Minimum 5 seconds to record
+    if (durationMs > 5000) {
+      await handleQuickLog('focus_session', {
+        title: 'Focus session',
+        value: { 
+          hours: Number(durationHours.toFixed(4)), 
+          minutes: durationMinutes,
+          note: 'Timed focus session completed.' 
+        },
+        payload: { 
+          hours: Number(durationHours.toFixed(4)), 
+          minutes: durationMinutes,
+          note: 'Timed focus session completed.' 
+        },
+        tags: ['home', 'focus', 'timed'],
+      })
+    }
+
+    setIsFocusing(false)
+    setFocusStartTime(null)
+    localStorage.removeItem('aura-focus-start')
+  }
 
   useEffect(() => {
     const syncSession = () => setSession(getStoredAuthSession())
@@ -84,10 +160,14 @@ const Home = ({ onNavigate }) => {
         const { summary: nextSummary } = await fetchHomeSummary(currentSession.token)
         if (cancelled) return
 
-        setSummary({
-          ...emptySummary,
+        setSummary(prev => ({
+          ...prev,
           ...nextSummary,
-        })
+          focusMinutes: savingTypeRef.current === 'focus_session' ? prev.focusMinutes : (nextSummary.focusMinutes ?? prev.focusMinutes),
+          focusHours: savingTypeRef.current === 'focus_session' ? prev.focusHours : (nextSummary.focusHours ?? prev.focusHours),
+          mealCount: savingTypeRef.current === 'meal_log' ? prev.mealCount : (nextSummary.mealCount ?? prev.mealCount),
+          hydrationCount: savingTypeRef.current === 'hydration_log' ? prev.hydrationCount : (nextSummary.hydrationCount ?? prev.hydrationCount),
+        }))
         setSession(currentSession)
         setSyncState('live')
       } catch (fetchError) {
@@ -114,10 +194,14 @@ const Home = ({ onNavigate }) => {
     const currentSession = getStoredAuthSession()
     if (!currentSession?.token) return
     const { summary: nextSummary } = await fetchHomeSummary(currentSession.token)
-    setSummary({
-      ...emptySummary,
+    setSummary(prev => ({
+      ...prev,
       ...nextSummary,
-    })
+      focusMinutes: savingTypeRef.current === 'focus_session' ? prev.focusMinutes : (nextSummary.focusMinutes ?? prev.focusMinutes),
+      focusHours: savingTypeRef.current === 'focus_session' ? prev.focusHours : (nextSummary.focusHours ?? prev.focusHours),
+      mealCount: savingTypeRef.current === 'meal_log' ? prev.mealCount : (nextSummary.mealCount ?? prev.mealCount),
+      hydrationCount: savingTypeRef.current === 'hydration_log' ? prev.hydrationCount : (nextSummary.hydrationCount ?? prev.hydrationCount),
+    }))
     setSyncState('live')
   }
 
@@ -156,6 +240,16 @@ const Home = ({ onNavigate }) => {
             hydrationNote: nextHydrationCount >= (prev.hydrationTarget || 8)
               ? 'Hydration target reached for today.'
               : `${Math.max((prev.hydrationTarget || 8) - nextHydrationCount, 0)} litre(s) left today.`,
+          }
+        }
+
+        if (type === 'focus_session') {
+          const addedMins = Number(payload?.value?.minutes ?? 0)
+          const addedHours = Number(payload?.value?.hours ?? 0)
+          return {
+            ...prev,
+            focusMinutes: (prev.focusMinutes || 0) + addedMins,
+            focusHours: (prev.focusHours || 0) + addedHours,
           }
         }
 
@@ -223,7 +317,7 @@ const Home = ({ onNavigate }) => {
           </div>
           <button
             type="button"
-            className="aura-tab-chip is-active"
+            className="aura-btn is-mood"
             onClick={() =>
               handleQuickLog('mood_checkin', {
                 title: 'Mood check-in',
@@ -263,11 +357,6 @@ const Home = ({ onNavigate }) => {
                 {summary.oxygenLevel}% O2
               </div>
             </div>
-            <div className="home-status-meta">
-              <span className={`home-sync-pill is-${syncState}`}>{loading ? 'Loading...' : syncState}</span>
-              <span>{summary.totalRecords} records</span>
-              <span>Updated {formatTime(summary.lastUpdatedAt)}</span>
-            </div>
             {error ? <p className="home-error-banner">{error}</p> : null}
           </article>
 
@@ -306,7 +395,7 @@ const Home = ({ onNavigate }) => {
                     />
                     <button
                       type="button"
-                      className="aura-tab-chip is-active home-target-save"
+                      className="aura-btn is-meal home-target-save"
                       onClick={() => {
                         handleQuickLog('meal_log', {
                           title: mealNote.trim() || 'Meal logged',
@@ -360,7 +449,7 @@ const Home = ({ onNavigate }) => {
                     />
                     <button
                       type="button"
-                      className="aura-tab-chip is-active home-target-save"
+                      className="aura-btn is-water home-target-save"
                       onClick={() => {
                         handleQuickLog('hydration_log', {
                           title: hydrationNote.trim() || 'Hydration logged',
@@ -386,23 +475,37 @@ const Home = ({ onNavigate }) => {
             </article>
 
             <article className="soft-card home-focus-card">
-              <h3>Focus Time</h3>
-              <p className="home-focus-hours">{summary.focusHours}h</p>
-              <p className="home-focus-note">This is the live value the Home page needs, not the raw record list.</p>
+              <div className="home-focus-header">
+                <h3>Focus Time</h3>
+                {isFocusing && <div className="home-focus-badge"><span className="home-focus-dot"></span> Rec</div>}
+              </div>
+              
+              <div className="home-focus-display">
+                <div className="home-focus-main">
+                  {(summary.focusMinutes || 0) < 60 ? (
+                    <p className="home-focus-hours">{summary.focusMinutes || 0}<span>m</span></p>
+                  ) : (
+                    <p className="home-focus-hours">{Math.floor(summary.focusHours || 0)}<span>h</span> {Math.round((summary.focusMinutes || 0) % 60)}<span>m</span></p>
+                  )}
+                  <p className="home-focus-label">Today's total</p>
+                </div>
+                {isFocusing && (
+                  <div className="home-focus-session">
+                    <p className="home-focus-timer">{formatElapsed(elapsedSessionTime)}</p>
+                    <p className="home-focus-label">Current session</p>
+                  </div>
+                )}
+              </div>
+
+              <p className="home-focus-note">Focus resets at midnight. Timed sessions are added to your daily total upon stopping.</p>
+              
               <button
                 type="button"
-                className="aura-tab-chip is-active"
-                onClick={() =>
-                  handleQuickLog('focus_session', {
-                    title: 'Focus session',
-                    value: { minutes: 25, hours: 0.4, note: '25 minute focus sprint captured from the dashboard.' },
-                    payload: { minutes: 25, hours: 0.4, note: '25 minute focus sprint captured from the dashboard.' },
-                    tags: ['home', 'focus'],
-                  })
-                }
+                className={`aura-btn ${isFocusing ? 'is-stop' : 'is-focus'}`}
+                onClick={isFocusing ? handleStopFocus : handleStartFocus}
                 disabled={savingType === 'focus_session' || !session?.token}
               >
-                {savingType === 'focus_session' ? 'Saving...' : 'Add focus sprint'}
+                {savingType === 'focus_session' ? 'Saving...' : isFocusing ? 'Stop Focus' : 'Start Focus'}
               </button>
             </article>
           </div>
@@ -417,7 +520,7 @@ const Home = ({ onNavigate }) => {
           </div>
           <button
             type="button"
-            className="aura-tab-chip"
+            className="aura-btn is-water"
             onClick={() =>
               handleQuickLog('hydration_log', {
                 title: 'Hydration log',

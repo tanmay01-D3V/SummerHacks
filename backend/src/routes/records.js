@@ -60,11 +60,11 @@ router.post('/', authRequired, async (req, res) => {
       title: String(req.body?.title || '').trim(),
       value: {
         ...(req.body?.value && typeof req.body.value === 'object' ? req.body.value : {}),
-        amount: safeAmount,
+        ...(target ? { amount: safeAmount } : {}),
       },
       payload: {
         ...(req.body?.payload && typeof req.body.payload === 'object' ? req.body.payload : {}),
-        amount: safeAmount,
+        ...(target ? { amount: safeAmount } : {}),
       },
       source: String(req.body?.source || 'manual').trim(),
       tags: Array.isArray(req.body?.tags) ? req.body.tags.filter(Boolean) : [],

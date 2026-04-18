@@ -68,6 +68,55 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
+.aura-btn {
+  border: 0;
+  border-radius: 16px;
+  padding: 11px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.aura-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  filter: brightness(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.aura-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.aura-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+.aura-btn.is-mood {
+  background: linear-gradient(135deg, #14b8a6, #2dd4bf);
+}
+
+.aura-btn.is-meal {
+  background: linear-gradient(135deg, #526a58, #829f8c);
+}
+
+.aura-btn.is-water {
+  background: linear-gradient(135deg, #4f7cac, #7aa4d4);
+}
+
+.aura-btn.is-focus {
+  background: linear-gradient(135deg, #75614c, #9c8469);
+}
+
 .home-quote {
   margin: 0;
   font-style: italic;
@@ -347,19 +396,94 @@
 
 .home-focus-card {
   background: color-mix(in srgb, var(--secondary-container) 40%, var(--surface-low));
+  display: flex;
+  flex-direction: column;
+}
+
+.home-focus-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.home-focus-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #d32f2f;
+  box-shadow: 0 4px 8px rgba(211, 47, 47, 0.15);
+}
+
+.home-focus-dot {
+  width: 8px;
+  height: 8px;
+  background: #d32f2f;
+  border-radius: 50%;
+  animation: recPulse 1.2s ease-in-out infinite;
+}
+
+.home-focus-display {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 12px;
 }
 
 .home-focus-hours {
   font-size: 46px;
-  margin: 8px 0;
+  margin: 0;
   color: var(--secondary);
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-weight: 800;
+  line-height: 1;
+}
+
+.home-focus-hours span {
+  font-size: 24px;
+  font-weight: 500;
+  margin-left: 2px;
+}
+
+.home-focus-timer {
+  font-size: 46px;
+  margin: 0;
+  color: #566675;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.home-focus-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--on-surface-variant);
+  font-weight: 700;
+  margin-top: 4px;
 }
 
 .home-focus-note {
   margin: 0 0 18px;
   color: var(--on-surface-variant);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.aura-btn.is-stop {
+  background: linear-gradient(135deg, #d32f2f, #ef5350);
+  box-shadow: 0 8px 16px rgba(211, 47, 47, 0.25);
+}
+
+@keyframes recPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 .home-quick-copy {

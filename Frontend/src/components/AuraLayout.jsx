@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import SmartAlert from './SmartAlert'
 import {
   clearStoredAuthSession,
   fetchCurrentUser,
@@ -237,6 +238,8 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
           </article>
         </section>
       )}
+      
+      <SmartAlert onNavigate={onNavigate} />
     </div>
   )
 }
