@@ -189,7 +189,7 @@ const PromptInput = React.forwardRef(
     return (
       <TooltipProvider>
         <PromptInputContext.Provider value={{ isLoading, value: value ?? internalValue, setValue: onValueChange ?? handleChange, maxHeight, onSubmit, disabled }}>
-          <div ref={ref} className={cn('rounded-3xl border border-[#444444] bg-[#1F2023] p-2 shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300', isLoading && 'border-red-500/70', className)} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
+          <div ref={ref} className={cn('rounded-3xl transition-all duration-300', isLoading && 'ring-2 ring-red-500/30', className)} onDragOver={onDragOver} onDragLeave={onDragLeave} onDrop={onDrop}>
             {children}
           </div>
         </PromptInputContext.Provider>
@@ -288,7 +288,7 @@ export const PromptInputBox = React.forwardRef(({ onSend = () => {}, isLoading =
 
   return (
     <>
-      <PromptInput value={input} onValueChange={setInput} isLoading={isLoading} onSubmit={handleSubmit} className={cn('w-full bg-[#1F2023] border-[#444444] shadow-[0_8px_30px_rgba(0,0,0,0.24)] transition-all duration-300 ease-in-out', isRecording && 'border-red-500/70', className)} disabled={isLoading || isRecording} ref={ref}>
+      <PromptInput value={input} onValueChange={setInput} isLoading={isLoading} onSubmit={handleSubmit} className={cn('w-full transition-all duration-300 ease-in-out', isRecording && 'ring-2 ring-red-500/30', className)} disabled={isLoading || isRecording} ref={ref}>
         {files.length > 0 && !isRecording && (
           <div className="flex flex-wrap gap-2 p-0 pb-1 transition-all duration-300">
             {files.map((file, index) => (

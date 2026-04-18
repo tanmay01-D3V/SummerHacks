@@ -18,6 +18,7 @@ Rules:
    - one next-hour action,
    - one today-level action.
 7) Respond in the same language as the user's message. If the message is in a different language, provide your response in that language.
+8) For voice sessions, be concise and favor conversational, spoken-word friendly phrasing over lists.
 `.trim()
 
 export const buildWellnessContext = (activeTab) => ({

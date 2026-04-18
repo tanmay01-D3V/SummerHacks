@@ -188,9 +188,9 @@ const PredictiveTrends = ({ onNavigate }) => {
       </section>
 
       <section className="trends-grid">
-        <article className="soft-card" style={{ padding: 26 }}>
+        <article className="soft-card" style={{ padding: 26, display: 'flex', flexDirection: 'column' }}>
           <h3 style={{ marginTop: 0, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>7-Day Outlook</h3>
-          <ChartContainer config={chartConfig} className="h-64 w-full">
+          <ChartContainer config={chartConfig} className="flex-1 w-full h-[420px] aspect-auto!">
             <LineChart data={outlookData} margin={{ top: 20, right: 20, left: 5, bottom: 20 }}>
               <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />

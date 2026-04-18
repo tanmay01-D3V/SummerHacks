@@ -147,6 +147,16 @@ const BioFeedbackJournal = ({ onNavigate }) => {
   const recognitionRef = useRef(null)
   const startedAtRef = useRef(0)
   const liveMetricsRef = useRef({ volume: 0.12, pitch: 0 })
+  const latestTranscriptRef = useRef('')
+  const latestManualTextRef = useRef('')
+
+  useEffect(() => {
+    latestTranscriptRef.current = transcript
+  }, [transcript])
+
+  useEffect(() => {
+    latestManualTextRef.current = manualText
+  }, [manualText])
 
   const combinedText = manualText.trim() || transcript.trim()
 
@@ -164,7 +174,8 @@ const BioFeedbackJournal = ({ onNavigate }) => {
       const start = index * bucketSize
       const segment = frequency.slice(start, start + bucketSize)
       const average = segment.reduce((sum, current) => sum + current, 0) / (segment.length || 1)
-      return Math.max(0.08, Math.min(1, average / 255))
+      // Boost the signal for better visibility
+      return Math.max(0.08, Math.min(1, (average / 180) * 1.2))
     })
 
     const volume =
@@ -175,7 +186,8 @@ const BioFeedbackJournal = ({ onNavigate }) => {
 
     const pitch = estimatePitch(timeDomain, audioCtxRef.current?.sampleRate || 44100)
 
-    setBars(values.map((value, index) => Math.max(0.08, Math.min(1, value * 0.7 + volume * 0.3 + (index % 5) * 0.01))))
+    // Apply more dynamic scaling
+    setBars(values.map((value, index) => Math.max(0.12, Math.min(1, value * 0.8 + volume * 0.4 + (index % 3) * 0.02))))
     liveMetricsRef.current = { volume, pitch }
     setAnalysis((prev) => (prev ? { ...prev, liveVolume: volume, livePitch: pitch } : prev))
     rafRef.current = window.requestAnimationFrame(updateBarsFromAudio)
@@ -203,8 +215,36 @@ const BioFeedbackJournal = ({ onNavigate }) => {
     setStatus('Recording stopped.')
   }
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+        if (isRecording) {
+          e.preventDefault()
+          stopRecording()
+        } else if (combinedText && !analysis && !saving) {
+          e.preventDefault()
+          handleAnalyze()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      if (rafRef.current) {
+        window.cancelAnimationFrame(rafRef.current)
+      }
+      streamRef.current?.getTracks?.().forEach((track) => track.stop())
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close()
+      }
+    }
+  }, [isRecording, combinedText, analysis, saving])
+
   const startRecording = async () => {
     setError('')
+    const initialTextBeforeRecording = latestManualTextRef.current
+    
     if (!navigator.mediaDevices?.getUserMedia) {
       setError('Your browser does not support microphone recording.')
       return
@@ -215,10 +255,13 @@ const BioFeedbackJournal = ({ onNavigate }) => {
       streamRef.current = stream
 
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)()
+      if (audioCtx.state === 'suspended') {
+        await audioCtx.resume()
+      }
       audioCtxRef.current = audioCtx
       const analyser = audioCtx.createAnalyser()
-      analyser.fftSize = 256
-      analyser.smoothingTimeConstant = 0.84
+      analyser.fftSize = 512
+      analyser.smoothingTimeConstant = 0.8
       const source = audioCtx.createMediaStreamSource(stream)
       source.connect(analyser)
       analyserRef.current = analyser
@@ -241,23 +284,24 @@ const BioFeedbackJournal = ({ onNavigate }) => {
         const audioUrl = URL.createObjectURL(blob)
         const { volume, pitch } = liveMetricsRef.current
 
-        const nextAnalysis = analyzeStressFactors({
-          audioData: {
-            volume,
-            pitch,
+        setAnalysis((prev) => {
+          const nextAnalysis = analyzeStressFactors({
+            audioData: {
+              volume,
+              pitch,
+              durationSeconds,
+            },
+            transcript: latestTranscriptRef.current,
+            manualText: latestManualTextRef.current,
+          })
+          return {
+            ...nextAnalysis,
+            audioUrl,
             durationSeconds,
-          },
-          transcript,
-          manualText,
+            generatedAt: new Date().toISOString(),
+          }
         })
-
-        setAnalysis({
-          ...nextAnalysis,
-          audioUrl,
-          durationSeconds,
-          generatedAt: new Date().toISOString(),
-        })
-        setStatus('Recording analyzed.')
+        setStatus('Recording analyzed. Press Enter to Save.')
       }
 
       recorder.start()
@@ -271,41 +315,57 @@ const BioFeedbackJournal = ({ onNavigate }) => {
         recognitionRef.current = recognition
 
         recognition.onresult = (event) => {
-          const nextTranscript = Array.from(event.results)
+          let interimTranscript = ''
+          let finalTranscript = ''
+
+          for (let i = event.resultIndex; i < event.results.length; ++i) {
+            if (event.results[i].isFinal) {
+              finalTranscript += event.results[i][0].transcript
+            } else {
+              interimTranscript += event.results[i][0].transcript
+            }
+          }
+
+          const fullSessionTranscript = Array.from(event.results)
             .map((result) => result[0]?.transcript || '')
             .join(' ')
             .trim()
-          if (nextTranscript) {
-            setTranscript(nextTranscript)
+          
+          setTranscript(fullSessionTranscript)
+          
+          // Real-time update into the manual text area
+          if (fullSessionTranscript) {
+            setManualText(initialTextBeforeRecording + (initialTextBeforeRecording ? ' ' : '') + fullSessionTranscript)
           }
         }
 
-        recognition.onerror = () => {
+        recognition.onerror = (err) => {
+          console.error('Speech recognition error:', err)
           setStatus('Voice capture is running with waveform only.')
+        }
+
+        recognition.onend = () => {
+          // If we are still state-recording, restart recognition (handles silence pauses)
+          if (recognitionRef.current && isRecording) {
+            try {
+              recognitionRef.current.start()
+            } catch (err) {
+              console.error('Failed to restart recognition:', err)
+            }
+          }
         }
 
         recognition.start()
       }
 
       setIsRecording(true)
-      setStatus('Listening for your bio-feedback...')
+      setStatus('Listening... (Press Enter to finish)')
       rafRef.current = window.requestAnimationFrame(updateBarsFromAudio)
     } catch (captureError) {
       setError(captureError.message || 'Could not access the microphone.')
+      setStatus('Microphone access denied.')
     }
   }
-
-  useEffect(() => {
-    return () => {
-      if (rafRef.current) {
-        window.cancelAnimationFrame(rafRef.current)
-      }
-      streamRef.current?.getTracks?.().forEach((track) => track.stop())
-      if (audioCtxRef.current) {
-        audioCtxRef.current.close()
-      }
-    }
-  }, [])
 
   const handleAnalyze = async () => {
     const payloadText = combinedText

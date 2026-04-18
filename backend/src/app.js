@@ -5,6 +5,8 @@ const authRoutes = require('./routes/auth')
 const analyticsRoutes = require('./routes/analytics')
 const homeRoutes = require('./routes/home')
 const recordRoutes = require('./routes/records')
+const chatRoutes = require('./routes/chat')
+const predictionRoutes = require('./routes/predictions')
 
 const app = express()
 
@@ -24,6 +26,8 @@ app.use('/api/auth', authRoutes)
 app.use('/api/analytics', analyticsRoutes)
 app.use('/api/home', homeRoutes)
 app.use('/api/records', recordRoutes)
+app.use('/api/chat', chatRoutes)
+app.use('/api/predictions', predictionRoutes)
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` })

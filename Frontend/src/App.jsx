@@ -22,6 +22,8 @@ const App = () => {
     return <Home onNavigate={setActiveTab} />
   }, [activeTab])
 
+  const activeIndex = TABS.indexOf(activeTab)
+
   return (
     <div className="aura-app" data-tab={activeTab}>
       {page}
@@ -29,20 +31,34 @@ const App = () => {
       <button type="button" className="aura-voice-fab" onClick={() => setActiveTab('assistant')} aria-label="Open Aura assistant page">
         <span className="material-symbols-outlined">graphic_eq</span>
       </button>
-      <div className="aura-tab-strip" role="tablist" aria-label="Aura pages">
-        {TABS.map((tab) => (
-          <button
-            key={tab}
-            type="button"
-            role="tab"
-            aria-selected={activeTab === tab}
-            className={`aura-tab-chip ${activeTab === tab ? 'is-active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
+
+      <div className="aura-tab-strip" role="tablist" aria-label="Aura pages" style={{ '--active-index': activeIndex }}>
+        <div className="aura-tab-bg" aria-hidden="true">
+          <div className="aura-tab-blob" />
+        </div>
+        <div className="aura-tab-list">
+          {TABS.map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              role="tab"
+              aria-selected={activeTab === tab}
+              className={`aura-tab-chip ${activeTab === tab ? 'is-active' : ''}`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
+
+      <svg style={{ visibility: 'hidden', position: 'absolute' }} width="0" height="0">
+        <filter id="aura-goo">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
+          <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
+          <feComposite in="SourceGraphic" in2="goo" operator="atop" />
+        </filter>
+      </svg>
     </div>
   )
 }

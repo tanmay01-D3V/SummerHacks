@@ -76,3 +76,8 @@ export const updateRecord = (token, recordId, payload) =>
 
 export const deleteRecord = (token, recordId) =>
   request(`/records/${recordId}`, { method: 'DELETE', token })
+
+export const fetchChatHistory = (token) => request('/chat', { token })
+
+export const createChatMessage = (token, payload) =>
+  request('/chat', { method: 'POST', token, body: payload })
