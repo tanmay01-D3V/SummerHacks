@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import AuraLayout from '../../components/AuraLayout'
+import SamaLayout from '../../components/SamaLayout'
 import audioFile from '../../assets/audio.mp3'
-import { createRecord, deleteRecord, fetchRecords, getStoredAuthSession, updateRecord } from '../../lib/auraApi'
+import { createRecord, deleteRecord, fetchRecords, getStoredAuthSession, updateRecord } from '../../lib/samaApi'
 import './intervention.css'
 
 const Intervention = ({ onNavigate }) => {
@@ -120,7 +120,7 @@ const Intervention = ({ onNavigate }) => {
   const orbSubtext = isActive ? 'Inhale... Exhale...' : 'Reset Cortisol Levels Now'
 
   return (
-    <AuraLayout active="intervention" title="Intervention" onNavigate={onNavigate}>
+    <SamaLayout active="intervention" title="Intervention" onNavigate={onNavigate}>
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ margin: 0, fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 'clamp(2.2rem, 7vw, 4.5rem)', lineHeight: 1.02 }}>
           Deep breath. <br />
@@ -150,7 +150,7 @@ const Intervention = ({ onNavigate }) => {
               </span>
             </div>
             <h3 style={{ margin: 0, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: 2.2, fontFamily: 'Plus Jakarta Sans, sans-serif' }}>
-              {isActive ? 'Aura Breath' : 'System Override'}
+              {isActive ? 'Sama Breath' : 'System Override'}
             </h3>
             <p style={{ marginBottom: 0, color: 'var(--on-surface-variant)' }}>{orbSubtext}</p>
           </div>
@@ -218,12 +218,12 @@ const Intervention = ({ onNavigate }) => {
           <span className="material-symbols-outlined">psychology</span>
           <h3 style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 30, lineHeight: 1.15 }}>"Tranquility is a choice, not a circumstance."</h3>
           <p>Your current stress markers are trending down 14% since your last intervention.</p>
-          <button type="button" className="aura-tab-chip" style={{ background: '#fff', color: 'var(--primary)' }}>
+          <button type="button" className="sama-tab-chip" style={{ background: '#fff', color: 'var(--primary)' }}>
             View Report
           </button>
         </article>
       </section>
-    </AuraLayout>
+    </SamaLayout>
   )
 }
 

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import AuraLayout from '../../components/AuraLayout'
+import SamaLayout from '../../components/SamaLayout'
 import { Input } from '../../components/ui/input'
 import { Slider } from '../../components/ui/slider'
-import { createRecord, fetchHomeSummary, getStoredAuthSession } from '../../lib/auraApi'
+import { createRecord, fetchHomeSummary, getStoredAuthSession } from '../../lib/samaApi'
 import './home.css'
 
 const POLL_INTERVAL_MS = 8000
@@ -58,7 +58,7 @@ const Home = ({ onNavigate }) => {
   const [elapsedSessionTime, setElapsedSessionTime] = useState(0)
 
   useEffect(() => {
-    const savedStart = localStorage.getItem('aura-focus-start')
+    const savedStart = localStorage.getItem('sama-focus-start')
     if (savedStart) {
       const startTime = new Date(savedStart)
       setFocusStartTime(startTime)
@@ -92,7 +92,7 @@ const Home = ({ onNavigate }) => {
     const now = new Date()
     setFocusStartTime(now)
     setIsFocusing(true)
-    localStorage.setItem('aura-focus-start', now.toISOString())
+    localStorage.setItem('sama-focus-start', now.toISOString())
   }
 
   const handleStopFocus = async () => {
@@ -122,16 +122,16 @@ const Home = ({ onNavigate }) => {
 
     setIsFocusing(false)
     setFocusStartTime(null)
-    localStorage.removeItem('aura-focus-start')
+    localStorage.removeItem('sama-focus-start')
   }
 
   useEffect(() => {
     const syncSession = () => setSession(getStoredAuthSession())
     window.addEventListener('storage', syncSession)
-    window.addEventListener('aura-auth-changed', syncSession)
+    window.addEventListener('sama-auth-changed', syncSession)
     return () => {
       window.removeEventListener('storage', syncSession)
-      window.removeEventListener('aura-auth-changed', syncSession)
+      window.removeEventListener('sama-auth-changed', syncSession)
     }
   }, [])
 
@@ -306,7 +306,7 @@ const Home = ({ onNavigate }) => {
   }
 
   return (
-    <AuraLayout active="pulse" title="Aura" onNavigate={onNavigate}>
+    <SamaLayout active="pulse" title="Sama" onNavigate={onNavigate}>
       <section className="home-dashboard-shell">
         <article className="soft-card home-hero-card">
           <span className="material-symbols-outlined home-hero-icon">auto_awesome</span>
@@ -317,7 +317,7 @@ const Home = ({ onNavigate }) => {
           </div>
           <button
             type="button"
-            className="aura-btn is-mood"
+            className="sama-btn is-mood"
             onClick={() =>
               handleQuickLog('mood_checkin', {
                 title: 'Mood check-in',
@@ -395,7 +395,7 @@ const Home = ({ onNavigate }) => {
                     />
                     <button
                       type="button"
-                      className="aura-btn is-meal home-target-save"
+                      className="sama-btn is-meal home-target-save"
                       onClick={() => {
                         handleQuickLog('meal_log', {
                           title: mealNote.trim() || 'Meal logged',
@@ -449,7 +449,7 @@ const Home = ({ onNavigate }) => {
                     />
                     <button
                       type="button"
-                      className="aura-btn is-water home-target-save"
+                      className="sama-btn is-water home-target-save"
                       onClick={() => {
                         handleQuickLog('hydration_log', {
                           title: hydrationNote.trim() || 'Hydration logged',
@@ -501,7 +501,7 @@ const Home = ({ onNavigate }) => {
               
               <button
                 type="button"
-                className={`aura-btn ${isFocusing ? 'is-stop' : 'is-focus'}`}
+                className={`sama-btn ${isFocusing ? 'is-stop' : 'is-focus'}`}
                 onClick={isFocusing ? handleStopFocus : handleStartFocus}
                 disabled={savingType === 'focus_session' || !session?.token}
               >
@@ -520,7 +520,7 @@ const Home = ({ onNavigate }) => {
           </div>
           <button
             type="button"
-            className="aura-btn is-water"
+            className="sama-btn is-water"
             onClick={() =>
               handleQuickLog('hydration_log', {
                 title: 'Hydration log',
@@ -538,7 +538,7 @@ const Home = ({ onNavigate }) => {
           The page now uses a summary endpoint at `/api/home/summary` and only pulls the data the home screen needs.
         </p>
       </section>
-    </AuraLayout>
+    </SamaLayout>
   )
 }
 

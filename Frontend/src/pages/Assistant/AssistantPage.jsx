@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import AuraLayout from '../../components/AuraLayout'
-import { createChatMessage, fetchChatHistory, getStoredAuthSession } from '../../lib/auraApi'
-import { buildWellnessContext, getAssistantReply } from '../../utils/auraAssistant'
+import SamaLayout from '../../components/SamaLayout'
+import { createChatMessage, fetchChatHistory, getStoredAuthSession } from '../../lib/samaApi'
+import { buildWellnessContext, getAssistantReply } from '../../utils/samaAssistant'
 import './assistant.css'
 
 const getSpeechRecognition = () => window.SpeechRecognition || window.webkitSpeechRecognition
@@ -33,7 +33,7 @@ const AssistantPage = ({ onNavigate }) => {
           setHistory([
             {
               role: 'assistant',
-              text: 'Welcome to Aura Assistant. Share your stress, sleep, or body discomfort and I will give grounded calming steps.',
+              text: 'Welcome to Sama Assistant. Share your stress, sleep, or body discomfort and I will give grounded calming steps.',
             },
           ])
         }
@@ -121,11 +121,11 @@ const AssistantPage = ({ onNavigate }) => {
   }
 
   return (
-    <AuraLayout active="pulse" title="Aura Assistant" onNavigate={onNavigate}>
+    <SamaLayout active="pulse" title="Sama Assistant" onNavigate={onNavigate}>
       <div className="assistant-container">
         
         {/* Messages Feed */}
-        <section className="aura-chat-history">
+        <section className="sama-chat-history">
           <AnimatePresence initial={false}>
             {history.map((msg, idx) => (
               <motion.div 
@@ -137,7 +137,7 @@ const AssistantPage = ({ onNavigate }) => {
                 <div className="chat-bubble">
                   {msg.text}
                 </div>
-                <span className="chat-sender-label">{msg.role === 'user' ? 'You' : 'Aura'}</span>
+                <span className="chat-sender-label">{msg.role === 'user' ? 'You' : 'Sama'}</span>
               </motion.div>
             ))}
             {loading && (
@@ -147,7 +147,7 @@ const AssistantPage = ({ onNavigate }) => {
                 className="chat-message-group assistant"
               >
                 <div className="chat-bubble" style={{ opacity: 0.6 }}>
-                  Aura is thinking...
+                  Sama is thinking...
                 </div>
               </motion.div>
             )}
@@ -156,13 +156,13 @@ const AssistantPage = ({ onNavigate }) => {
         </section>
 
         {/* Bespoke Input Bar */}
-        <footer className="aura-chat-input-wrap">
-          <div className="aura-chat-input-inner">
+        <footer className="sama-chat-input-wrap">
+          <div className="sama-chat-input-inner">
             
             <button 
               className={`chat-icon-btn ${isListening ? 'active' : ''}`}
               onClick={toggleVoice}
-              title="Speak to Aura"
+              title="Speak to Sama"
             >
               <span className="material-symbols-outlined">
                 {isListening ? 'stop_circle' : 'mic'}
@@ -171,8 +171,8 @@ const AssistantPage = ({ onNavigate }) => {
 
             <textarea 
               ref={textareaRef}
-              className="aura-chat-textarea"
-              placeholder="Tell Aura how you feel..."
+              className="sama-chat-textarea"
+              placeholder="Tell Sama how you feel..."
               rows={1}
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
@@ -194,7 +194,7 @@ const AssistantPage = ({ onNavigate }) => {
         </footer>
 
       </div>
-    </AuraLayout>
+    </SamaLayout>
   )
 }
 

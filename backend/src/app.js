@@ -19,7 +19,7 @@ app.use(
 app.use(express.json({ limit: '1mb' }))
 
 app.get('/health', (_, res) => {
-  res.json({ ok: true, service: 'aura-backend' })
+  res.json({ ok: true, service: 'sama-backend' })
 })
 
 app.use('/api/auth', authRoutes)

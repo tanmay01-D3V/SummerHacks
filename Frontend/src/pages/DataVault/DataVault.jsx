@@ -1,8 +1,8 @@
-import AuraLayout from '../../components/AuraLayout'
+import SamaLayout from '../../components/SamaLayout'
 import './DataVault.css'
 
 const DataVault = ({ onNavigate }) => (
-  <AuraLayout active="vault" title="Data Vault" onNavigate={onNavigate}>
+  <SamaLayout active="vault" title="Data Vault" onNavigate={onNavigate}>
     <section className="vault-top">
       <article className="soft-card" style={{ padding: 24 }}>
         <p style={{ margin: 0, textTransform: 'uppercase', letterSpacing: 1.8, fontSize: 12, color: 'var(--primary)', fontWeight: 700 }}>System Sync</p>
@@ -56,7 +56,7 @@ const DataVault = ({ onNavigate }) => (
         ))}
       </div>
     </section>
-  </AuraLayout>
+  </SamaLayout>
 )
 
 export default DataVault

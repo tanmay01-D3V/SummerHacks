@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import AuraLayout from '../../components/AuraLayout'
-import { createRecord, getStoredAuthSession } from '../../lib/auraApi'
+import SamaLayout from '../../components/SamaLayout'
+import { createRecord, getStoredAuthSession } from '../../lib/samaApi'
 import './bioFeedbackJournal.css'
 
 const KEYWORD_BANK = [
@@ -423,12 +423,12 @@ const BioFeedbackJournal = ({ onNavigate }) => {
   const pulsingMessage = isRecording ? 'Listening...' : 'Pulse to Speak'
 
   return (
-    <AuraLayout active="journal" title="Bio-Feedback Journal" onNavigate={onNavigate}>
+    <SamaLayout active="journal" title="Bio-Feedback Journal" onNavigate={onNavigate}>
       <section className="journal-hero soft-card">
         <div className="journal-hero-copy">
           <p className="journal-kicker">Bio-feedback journaling</p>
           <h2>Pulse to speak.</h2>
-          <p>Let Aura catch the pressure behind your words, then turn it into gentle next steps.</p>
+          <p>Let Sama catch the pressure behind your words, then turn it into gentle next steps.</p>
           <div className="journal-actions">
             <button
               type="button"
@@ -465,7 +465,7 @@ const BioFeedbackJournal = ({ onNavigate }) => {
             rows={8}
           />
           <div className="journal-inline-actions">
-            <button type="button" className="aura-tab-chip is-active" onClick={handleAnalyze} disabled={saving}>
+            <button type="button" className="sama-tab-chip is-active" onClick={handleAnalyze} disabled={saving}>
               {saving ? 'Saving...' : 'Submit for Analysis'}
             </button>
             {savedAt ? <span className="journal-saved-at">Last saved {formatTime(savedAt)}</span> : null}
@@ -505,7 +505,7 @@ const BioFeedbackJournal = ({ onNavigate }) => {
             <p className="journal-kicker">Correlation Map</p>
             <h3>Stress Culprits</h3>
           </div>
-          <button type="button" className="aura-tab-chip" onClick={() => onNavigate('intervention')}>
+          <button type="button" className="sama-tab-chip" onClick={() => onNavigate('intervention')}>
             Open Intervention
           </button>
         </div>
@@ -544,7 +544,7 @@ const BioFeedbackJournal = ({ onNavigate }) => {
           <p>Use the analysis to notice where your energy starts to narrow, then trigger a calmer response before the next spike.</p>
         </div>
       </section>
-    </AuraLayout>
+    </SamaLayout>
   )
 }
 

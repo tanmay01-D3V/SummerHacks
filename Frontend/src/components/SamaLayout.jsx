@@ -7,7 +7,7 @@ import {
   loginUser,
   registerUser,
   setStoredAuthSession,
-} from '../lib/auraApi'
+} from '../lib/samaApi'
 
 const NAV_ITEMS = [
   { id: 'pulse', label: 'Pulse', icon: 'radio_button_checked' },
@@ -17,7 +17,7 @@ const NAV_ITEMS = [
   { id: 'vault', label: 'Data Vault', icon: 'security' },
 ]
 
-const AuraLayout = ({ active, title, onNavigate, children }) => {
+const SamaLayout = ({ active, title, onNavigate, children }) => {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
   const [authMode, setAuthMode] = useState('login')
@@ -86,12 +86,12 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
   }
 
   return (
-    <div className="aura-shell">
-      <div className="aura-sidebar-trigger" aria-hidden="true" />
-      <aside className="aura-sidebar">
+    <div className="sama-shell">
+      <div className="sama-sidebar-trigger" aria-hidden="true" />
+      <aside className="sama-sidebar">
         <div style={{ marginBottom: 28 }}>
           <div style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 30, fontWeight: 800, color: 'var(--primary)' }}>
-            Aura
+            Sama
           </div>
           <div style={{ color: 'var(--on-surface-variant)', fontSize: 13 }}>Stay Centered</div>
         </div>
@@ -100,7 +100,7 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
             <button
               key={item.id}
               type="button"
-              className={`aura-nav-item ${active === item.id ? 'is-active' : ''}`}
+              className={`sama-nav-item ${active === item.id ? 'is-active' : ''}`}
               onClick={() => onNavigate(item.id)}
             >
               <span className="material-symbols-outlined">{item.icon}</span>
@@ -110,23 +110,23 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
         </nav>
       </aside>
 
-      <header className="aura-header">
+      <header className="sama-header">
         <h1 style={{ fontFamily: 'Plus Jakarta Sans, sans-serif', margin: 0, fontSize: 36, lineHeight: 1, color: 'var(--primary)' }}>
           {title}
         </h1>
         <div style={{ display: 'flex', gap: 12 }}>
           {authUser ? (
-            <button type="button" className="aura-header-pill" onClick={() => setAuthOpen(true)} aria-label="Account details">
+            <button type="button" className="sama-header-pill" onClick={() => setAuthOpen(true)} aria-label="Account details">
               <span className="material-symbols-outlined">verified_user</span>
               <span>{authUser.name}</span>
             </button>
           ) : null}
-          <button type="button" className="aura-header-icon" onClick={() => setSettingsOpen((v) => !v)} aria-label="Open settings">
+          <button type="button" className="sama-header-icon" onClick={() => setSettingsOpen((v) => !v)} aria-label="Open settings">
             <span className="material-symbols-outlined">settings</span>
           </button>
           <button
             type="button"
-            className="aura-header-icon"
+            className="sama-header-icon"
             onClick={() => setAuthOpen((v) => !v)}
             aria-label={authUser ? 'Open account' : 'Open login'}
           >
@@ -135,26 +135,26 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
         </div>
       </header>
 
-      <main className="aura-main">{children}</main>
+      <main className="sama-main">{children}</main>
 
       {settingsOpen && (
-        <section className="aura-overlay" role="dialog" aria-modal="true">
-          <article className="aura-modal soft-card">
-            <div className="aura-modal-header">
+        <section className="sama-overlay" role="dialog" aria-modal="true">
+          <article className="sama-modal soft-card">
+            <div className="sama-modal-header">
               <h3>Settings</h3>
-              <button type="button" className="aura-tab-chip" onClick={() => setSettingsOpen(false)}>
+              <button type="button" className="sama-tab-chip" onClick={() => setSettingsOpen(false)}>
                 Close
               </button>
             </div>
-            <label className="aura-setting-row">
+            <label className="sama-setting-row">
               <span>Daily intervention reminders</span>
               <input type="checkbox" defaultChecked />
             </label>
-            <label className="aura-setting-row">
+            <label className="sama-setting-row">
               <span>Enable calm voice responses</span>
               <input type="checkbox" defaultChecked />
             </label>
-            <label className="aura-setting-row">
+            <label className="sama-setting-row">
               <span>Low-energy workload suggestions</span>
               <input type="checkbox" defaultChecked />
             </label>
@@ -163,47 +163,47 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
       )}
 
       {authOpen && (
-        <section className="aura-overlay" role="dialog" aria-modal="true">
-          <article className="aura-modal soft-card">
-            <div className="aura-modal-header">
-              <h3>{authUser ? 'Your account' : authMode === 'register' ? 'Create account' : 'Login to Aura'}</h3>
-              <button type="button" className="aura-tab-chip" onClick={closeAuth}>
+        <section className="sama-overlay" role="dialog" aria-modal="true">
+          <article className="sama-modal soft-card">
+            <div className="sama-modal-header">
+              <h3>{authUser ? 'Your account' : authMode === 'register' ? 'Create account' : 'Login to Sama'}</h3>
+              <button type="button" className="sama-tab-chip" onClick={closeAuth}>
                 Close
               </button>
             </div>
             {authUser ? (
-              <div className="aura-account-card">
-                <p className="aura-account-label">Signed in</p>
+              <div className="sama-account-card">
+                <p className="sama-account-label">Signed in</p>
                 <h4>{authUser.name}</h4>
                 <p>{authUser.email}</p>
-                <div className="aura-account-actions">
-                  <button type="button" className="aura-tab-chip is-active" onClick={handleLogout}>
+                <div className="sama-account-actions">
+                  <button type="button" className="sama-tab-chip is-active" onClick={handleLogout}>
                     Sign out
                   </button>
                 </div>
               </div>
             ) : (
               <>
-                <div className="aura-auth-tabs">
+                <div className="sama-auth-tabs">
                   <button
                     type="button"
-                    className={`aura-tab-chip ${authMode === 'login' ? 'is-active' : ''}`}
+                    className={`sama-tab-chip ${authMode === 'login' ? 'is-active' : ''}`}
                     onClick={() => setAuthMode('login')}
                   >
                     Login
                   </button>
                   <button
                     type="button"
-                    className={`aura-tab-chip ${authMode === 'register' ? 'is-active' : ''}`}
+                    className={`sama-tab-chip ${authMode === 'register' ? 'is-active' : ''}`}
                     onClick={() => setAuthMode('register')}
                   >
                     Create account
                   </button>
                 </div>
-                <form className="aura-form-grid" onSubmit={handleAuthSubmit}>
+                <form className="sama-form-grid" onSubmit={handleAuthSubmit}>
                   {authMode === 'register' ? (
                     <input
-                      className="aura-voice-input"
+                      className="sama-voice-input"
                       type="text"
                       placeholder="Full name"
                       value={authForm.name}
@@ -212,7 +212,7 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
                     />
                   ) : null}
                   <input
-                    className="aura-voice-input"
+                    className="sama-voice-input"
                     type="email"
                     placeholder="Email"
                     value={authForm.email}
@@ -220,7 +220,7 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
                     required
                   />
                   <input
-                    className="aura-voice-input"
+                    className="sama-voice-input"
                     type="password"
                     placeholder="Password"
                     value={authForm.password}
@@ -228,8 +228,8 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
                     required
                     minLength={8}
                   />
-                  {authError ? <p className="aura-auth-error">{authError}</p> : null}
-                  <button type="submit" className="aura-tab-chip is-active" disabled={authLoading}>
+                  {authError ? <p className="sama-auth-error">{authError}</p> : null}
+                  <button type="submit" className="sama-tab-chip is-active" disabled={authLoading}>
                     {authLoading ? 'Working...' : authMode === 'register' ? 'Create account' : 'Continue'}
                   </button>
                 </form>
@@ -244,4 +244,4 @@ const AuraLayout = ({ active, title, onNavigate, children }) => {
   )
 }
 
-export default AuraLayout
+export default SamaLayout

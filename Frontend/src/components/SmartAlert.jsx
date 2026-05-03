@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { fetchProactiveAlert, getStoredAuthSession } from '../lib/auraApi'
+import { fetchProactiveAlert, getStoredAuthSession } from '../lib/samaApi'
 
 const SmartAlert = ({ onNavigate }) => {
   const [alert, setAlert] = useState(null)
@@ -15,7 +15,7 @@ const SmartAlert = ({ onNavigate }) => {
         const { alert: activeAlert } = await fetchProactiveAlert(session.token)
         if (activeAlert) {
           // Check if we've already seen or dismissed this alert in this session
-          const dismissedId = sessionStorage.getItem('aura-dismissed-alert')
+          const dismissedId = sessionStorage.getItem('sama-dismissed-alert')
           if (dismissedId !== activeAlert.id) {
             setAlert(activeAlert)
             setIsVisible(true)
@@ -36,7 +36,7 @@ const SmartAlert = ({ onNavigate }) => {
   const handleDismiss = () => {
     setIsVisible(false)
     if (alert) {
-      sessionStorage.setItem('aura-dismissed-alert', alert.id)
+      sessionStorage.setItem('sama-dismissed-alert', alert.id)
     }
   }
 
@@ -120,7 +120,7 @@ const SmartAlert = ({ onNavigate }) => {
             )}
 
             <button 
-              className="aura-tab-chip is-active" 
+              className="sama-tab-chip is-active" 
               onClick={handleAction}
               style={{ width: '100%', justifyContent: 'center', padding: '12px', borderRadius: '14px' }}
             >

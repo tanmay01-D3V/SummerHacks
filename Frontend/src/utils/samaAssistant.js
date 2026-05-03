@@ -2,7 +2,7 @@ const OPENAI_API_URL = 'https://api.openai.com/v1/chat/completions'
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent'
 
 const SYSTEM_PROMPT = `
-You are Aura Voice Support, a calm and supportive wellness copilot.
+You are Sama Voice Support, a calm and supportive wellness copilot.
 Primary goal: help users with stress, mood, fatigue, hydration, sleep rhythm, physical tension, and healthy routine adjustments.
 
 Rules:
@@ -33,17 +33,17 @@ export const buildWellnessContext = (activeTab) => ({
 })
 
 export const getAssistantReply = async ({ message, context, language = 'en-US' }) => {
-  const apiKey = import.meta.env.VITE_AURA_AI_API_KEY
-  const provider = (import.meta.env.VITE_AURA_AI_PROVIDER || 'gemini').toLowerCase()
-  const apiUrl = import.meta.env.VITE_AURA_AI_API_URL
-  const model = import.meta.env.VITE_AURA_AI_MODEL || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini')
+  const apiKey = import.meta.env.VITE_SAMA_AI_API_KEY
+  const provider = (import.meta.env.VITE_SAMA_AI_PROVIDER || 'gemini').toLowerCase()
+  const apiUrl = import.meta.env.VITE_SAMA_AI_API_URL
+  const model = import.meta.env.VITE_SAMA_AI_MODEL || (provider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini')
 
   // Add language context to the user prompt
   const languageContext = language !== 'en-US' ? `Please respond in the same language as the user. The user is speaking in: ${language}. ` : ''
   const userPrompt = `${languageContext}User wellness context:\n${JSON.stringify(context, null, 2)}\n\nUser says:\n${message}`
 
   if (!apiKey) {
-    throw new Error('Missing VITE_AURA_AI_API_KEY. Add it to your .env.local file.')
+    throw new Error('Missing VITE_SAMA_AI_API_KEY. Add it to your .env.local file.')
   }
 
   const isGemini = provider === 'gemini'

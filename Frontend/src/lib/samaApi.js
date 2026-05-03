@@ -1,6 +1,6 @@
-const API_BASE = import.meta.env.VITE_AURA_API_URL || 'http://localhost:4000/api'
-const STORAGE_KEY = 'aura.auth.session'
-const AUTH_EVENT = 'aura-auth-changed'
+const API_BASE = import.meta.env.VITE_SAMA_API_URL || 'http://localhost:4000/api'
+const STORAGE_KEY = 'sama.auth.session'
+const AUTH_EVENT = 'sama-auth-changed'
 
 const notifyAuthChange = () => {
   if (typeof window === 'undefined') return

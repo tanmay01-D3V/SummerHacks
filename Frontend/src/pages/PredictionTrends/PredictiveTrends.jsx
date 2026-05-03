@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
-import AuraLayout from '../../components/AuraLayout'
+import SamaLayout from '../../components/SamaLayout'
 import { ChartContainer, ChartTooltip } from '../../components/ui/line-charts-6'
-import { fetchCorrelationAnalytics, fetchHomeSummary, getStoredAuthSession } from '../../lib/auraApi'
+import { fetchCorrelationAnalytics, fetchHomeSummary, getStoredAuthSession } from '../../lib/samaApi'
 import { Line, LineChart, XAxis, YAxis } from 'recharts'
 import './PredictiveTrends.css'
 
@@ -181,10 +181,10 @@ const PredictiveTrends = ({ onNavigate }) => {
     : grid[0]
 
   return (
-    <AuraLayout active="trends" title="Predictive Trends" onNavigate={onNavigate}>
+    <SamaLayout active="trends" title="Predictive Trends" onNavigate={onNavigate}>
       <section style={{ marginBottom: 24 }}>
         <h2 style={{ margin: 0, fontFamily: 'Plus Jakarta Sans, sans-serif', fontSize: 'clamp(2.4rem, 7vw, 4.8rem)', lineHeight: 1 }}>Your calm is foreseen.</h2>
-        <p style={{ color: 'var(--on-surface-variant)', maxWidth: 700 }}>Using biometrics and historical context, Aura visualizes your upcoming emotional terrain.</p>
+        <p style={{ color: 'var(--on-surface-variant)', maxWidth: 700 }}>Using biometrics and historical context, Sama visualizes your upcoming emotional terrain.</p>
       </section>
 
       <section className="trends-grid">
@@ -270,7 +270,7 @@ const PredictiveTrends = ({ onNavigate }) => {
           ))}
         </div>
       </section>
-    </AuraLayout>
+    </SamaLayout>
   )
 }
 

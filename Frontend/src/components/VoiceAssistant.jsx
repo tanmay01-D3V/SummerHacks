@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from 'react'
-import { buildWellnessContext, getAssistantReply } from '../utils/auraAssistant'
+import { buildWellnessContext, getAssistantReply } from '../utils/samaAssistant'
 
 const getSpeechRecognition = () => window.SpeechRecognition || window.webkitSpeechRecognition
 
@@ -50,7 +50,7 @@ const VoiceAssistant = ({ activeTab }) => {
   const [messages, setMessages] = useState([
     {
       role: 'assistant',
-      content: 'I am your Aura voice assistant. I can help in multiple languages including English, Hindi, Marathi, Gujarati, Tamil, Telugu, and more. Tell me how you are feeling mentally or physically, and I will suggest grounded next steps.',
+      content: 'I am your Sama voice assistant. I can help in multiple languages including English, Hindi, Marathi, Gujarati, Tamil, Telugu, and more. Tell me how you are feeling mentally or physically, and I will suggest grounded next steps.',
     },
   ])
 
@@ -290,7 +290,7 @@ const VoiceAssistant = ({ activeTab }) => {
     <>
       <button
         type="button"
-        className="aura-voice-fab"
+        className="sama-voice-fab"
         onClick={() => setOpen((v) => !v)}
         aria-label="Open AI voice assistant"
       >
@@ -298,10 +298,10 @@ const VoiceAssistant = ({ activeTab }) => {
       </button>
 
       {open && (
-        <section className="aura-voice-panel soft-card" aria-live="polite">
-          <header className="aura-voice-header">
+        <section className="sama-voice-panel soft-card" aria-live="polite">
+          <header className="sama-voice-header">
             <div>
-              <h3>Aura Voice Care</h3>
+              <h3>Sama Voice Care</h3>
               <p>Mental + physical wellness guidance based on your current state.</p>
               <p style={{ fontSize: '12px', color: 'var(--on-surface-variant)', marginTop: '4px' }}>
                 Browser: {browserInfo} | Speech API: {speechSupported ? '✅ Supported' : '❌ Not Supported'}
@@ -311,7 +311,7 @@ const VoiceAssistant = ({ activeTab }) => {
               <select
                 value={selectedLanguage}
                 onChange={(e) => setSelectedLanguage(e.target.value)}
-                className="aura-language-select"
+                className="sama-language-select"
                 style={{
                   padding: '4px 8px',
                   borderRadius: '4px',
@@ -330,47 +330,47 @@ const VoiceAssistant = ({ activeTab }) => {
               <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
                 <button
                   type="button"
-                  className={`aura-tab-chip ${textToSpeechEnabled ? 'is-active' : ''}`}
+                  className={`sama-tab-chip ${textToSpeechEnabled ? 'is-active' : ''}`}
                   onClick={() => setTextToSpeechEnabled(!textToSpeechEnabled)}
                   title={textToSpeechEnabled ? 'Disable voice responses' : 'Enable voice responses'}
                   style={{ fontSize: '11px', padding: '4px 6px' }}
                 >
                   🔊
                 </button>
-                <button type="button" className="aura-tab-chip" onClick={() => setOpen(false)}>
+                <button type="button" className="sama-tab-chip" onClick={() => setOpen(false)}>
                   Close
                 </button>
               </div>
             </div>
           </header>
 
-          <div className="aura-voice-log">
+          <div className="sama-voice-log">
             {messages.map((msg, idx) => (
-              <article key={`${msg.role}-${idx}`} className={`aura-bubble ${msg.role}`}>
+              <article key={`${msg.role}-${idx}`} className={`sama-bubble ${msg.role}`}>
                 {msg.content}
               </article>
             ))}
-            {loading && <article className="aura-bubble assistant">Thinking...</article>}
+            {loading && <article className="sama-bubble assistant">Thinking...</article>}
           </div>
 
-          {error && <p className="aura-voice-error">{error}</p>}
+          {error && <p className="sama-voice-error">{error}</p>}
 
-          <div className="aura-voice-input-row">
+          <div className="sama-voice-input-row">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Tell Aura how you feel..."
-              className="aura-voice-input"
+              placeholder="Tell Sama how you feel..."
+              className="sama-voice-input"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') askAssistant(input)
               }}
             />
-            <button type="button" className="aura-tab-chip is-active" onClick={() => askAssistant(input)} disabled={loading}>
+            <button type="button" className="sama-tab-chip is-active" onClick={() => askAssistant(input)} disabled={loading}>
               Send
             </button>
             <button
               type="button"
-              className="aura-tab-chip"
+              className="sama-tab-chip"
               onClick={() => {
                 alert('To enable microphone:\n1. Click the lock/info icon in the address bar\n2. Find "Microphone" permission\n3. Set it to "Allow"\n4. Refresh the page and try again')
               }}
@@ -379,12 +379,12 @@ const VoiceAssistant = ({ activeTab }) => {
             >
               🎙️ Help
             </button>
-            <button type="button" className="aura-tab-chip" onClick={testVoiceCapture} disabled={loading || listening} title="Test voice recognition">
+            <button type="button" className="sama-tab-chip" onClick={testVoiceCapture} disabled={loading || listening} title="Test voice recognition">
               Test Voice
             </button>
             <button
               type="button"
-              className={`aura-tab-chip ${listening ? 'is-active' : ''}`}
+              className={`sama-tab-chip ${listening ? 'is-active' : ''}`}
               onClick={startVoiceCapture}
               disabled={loading || !speechSupported}
               title={!speechSupported ? 'Speech recognition not supported in this browser' : listening ? 'Listening... Click to stop' : 'Click to start voice input'}

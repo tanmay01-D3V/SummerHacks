@@ -26,7 +26,7 @@ const App = () => {
   const activeIndex = TABS.indexOf(activeTab)
 
   return (
-    <div className="aura-app" data-tab={activeTab}>
+    <div className="sama-app" data-tab={activeTab}>
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={activeTab}
@@ -44,22 +44,22 @@ const App = () => {
       </AnimatePresence>
 
       <VoiceAssistant activeTab={activeTab} />
-      <button type="button" className="aura-voice-fab" onClick={() => setActiveTab('assistant')} aria-label="Open Aura assistant page">
+      <button type="button" className="sama-voice-fab" onClick={() => setActiveTab('assistant')} aria-label="Open Sama assistant page">
         <span className="material-symbols-outlined">graphic_eq</span>
       </button>
 
-      <div className="aura-tab-strip" role="tablist" aria-label="Aura pages" style={{ '--active-index': activeIndex }}>
-        <div className="aura-tab-bg" aria-hidden="true">
-          <div className="aura-tab-blob" />
+      <div className="sama-tab-strip" role="tablist" aria-label="Sama pages" style={{ '--active-index': activeIndex }}>
+        <div className="sama-tab-bg" aria-hidden="true">
+          <div className="sama-tab-blob" />
         </div>
-        <div className="aura-tab-list">
+        <div className="sama-tab-list">
           {TABS.map((tab) => (
             <button
               key={tab}
               type="button"
               role="tab"
               aria-selected={activeTab === tab}
-              className={`aura-tab-chip ${activeTab === tab ? 'is-active' : ''}`}
+              className={`sama-tab-chip ${activeTab === tab ? 'is-active' : ''}`}
               onClick={() => setActiveTab(tab)}
             >
               {tab}
@@ -69,7 +69,7 @@ const App = () => {
       </div>
 
       <svg style={{ visibility: 'hidden', position: 'absolute' }} width="0" height="0">
-        <filter id="aura-goo">
+        <filter id="sama-goo">
           <feGaussianBlur in="SourceGraphic" stdDeviation="15" result="blur" />
           <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 35 -15" result="goo" />
           <feComposite in="SourceGraphic" in2="goo" operator="atop" />

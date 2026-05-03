@@ -68,7 +68,7 @@
   font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
-.aura-btn {
+.sama-btn {
   border: 0;
   border-radius: 16px;
   padding: 11px 20px;
@@ -85,35 +85,35 @@
   white-space: nowrap;
 }
 
-.aura-btn:hover:not(:disabled) {
+.sama-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   filter: brightness(1.1);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.aura-btn:active:not(:disabled) {
+.sama-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.aura-btn:disabled {
+.sama-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
   filter: grayscale(0.5);
 }
 
-.aura-btn.is-mood {
+.sama-btn.is-mood {
   background: linear-gradient(135deg, #14b8a6, #2dd4bf);
 }
 
-.aura-btn.is-meal {
+.sama-btn.is-meal {
   background: linear-gradient(135deg, #526a58, #829f8c);
 }
 
-.aura-btn.is-water {
+.sama-btn.is-water {
   background: linear-gradient(135deg, #4f7cac, #7aa4d4);
 }
 
-.aura-btn.is-focus {
+.sama-btn.is-focus {
   background: linear-gradient(135deg, #75614c, #9c8469);
 }
 
@@ -132,7 +132,7 @@
   display: grid;
   place-items: center;
   position: relative;
-  animation: auraFloat 6s ease-in-out infinite;
+  animation: samaFloat 6s ease-in-out infinite;
 }
 
 .home-pulse-core {
@@ -390,7 +390,7 @@
   color: var(--on-surface-variant);
 }
 
-.home-note-entry .aura-tab-chip {
+.home-note-entry .sama-tab-chip {
   justify-self: start;
 }
 
@@ -475,7 +475,7 @@
   line-height: 1.5;
 }
 
-.aura-btn.is-stop {
+.sama-btn.is-stop {
   background: linear-gradient(135deg, #d32f2f, #ef5350);
   box-shadow: 0 8px 16px rgba(211, 47, 47, 0.25);
 }
@@ -521,7 +521,7 @@
   }
 }
 
-@keyframes auraFloat {
+@keyframes samaFloat {
   0%,
   100% {
     transform: translateY(0px);

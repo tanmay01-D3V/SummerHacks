@@ -6,7 +6,7 @@ const start = async () => {
   try {
     await connectDb()
     app.listen(port, () => {
-      console.log(`Aura backend listening on http://localhost:${port}`)
+      console.log(`Sama backend listening on http://localhost:${port}`)
     })
   } catch (error) {
     console.error('Failed to start backend:', error)

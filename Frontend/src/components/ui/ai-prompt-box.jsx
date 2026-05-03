@@ -16,9 +16,9 @@ const styles = `
   textarea::-webkit-scrollbar-thumb:hover { background-color: #555555; }
 `
 
-if (typeof document !== 'undefined' && !document.getElementById('aura-ai-prompt-styles')) {
+if (typeof document !== 'undefined' && !document.getElementById('sama-ai-prompt-styles')) {
   const styleSheet = document.createElement('style')
-  styleSheet.id = 'aura-ai-prompt-styles'
+  styleSheet.id = 'sama-ai-prompt-styles'
   styleSheet.innerText = styles
   document.head.appendChild(styleSheet)
 }
